@@ -1,0 +1,16 @@
+# Fichiers compilés Java
+*.class
+bin/
+target/
+
+# Fichiers de sauvegarde
+../backup_local/
+
+# Fichiers IDE
+.vscode/
+.idea/
+*.iml
+
+# Fichiers système
+.DS_Store
+Thumbs.db
