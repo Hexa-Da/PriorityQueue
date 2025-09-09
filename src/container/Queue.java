@@ -1,9 +1,10 @@
+package container;
+
 // Import de l'exception NoSuchElementException pour les cas où la file est vide
 import java.util.NoSuchElementException;
 
 /**
  * Interface Queue<E> - Définit le contrat pour une structure de données de type "file"
- * 
  * Une file (queue) est une structure de données linéaire qui suit le principe FIFO
  * (First In, First Out) : le premier élément ajouté est le premier à être retiré.
  * 
@@ -13,33 +14,16 @@ import java.util.NoSuchElementException;
  *           stocker n'importe quel type d'élément de manière type-safe.
  */
 
-public interface Queue<E> extends Iterable<E> {
-    /**
-     * Une interface en Java est un contrat qui définit un ensemble de méthodes abstraites
-     * que les classes qui l'implémentent doivent fournir. Elle permet de :
-     * 
-     * - Définir un comportement commun que plusieurs classes non liées peuvent implémenter
-     * - Établir un contrat entre le code client et les classes d'implémentation
-     * - Réaliser une forme de polymorphisme sans héritage de classe
-     * - Définir des constantes partagées entre les implémentations
-     * 
-     * Caractéristiques principales :
-     * - Toutes les méthodes sont public abstract par défaut
-     * - Tous les attributs sont public static final par défaut
-     * - Une classe peut implémenter plusieurs interfaces
-     * - Une interface peut étendre d'autres interfaces
-     * 
-     * Exemple d'utilisation de cette interface Queue<E> :
-     * public class MaFile<E> implements Queue<E> {
-     *     // Doit implémenter toutes les méthodes définies
-     * }
-     */
-    
+public interface Queue<E> extends Iterable<E> { 
     /**
      * L'interface Iterable<E> permet de parcourir les éléments de la file
      * de manière séquentielle, du premier au dernier élément, sans modifier
      * la structure de la file. Cela permet notamment d'utiliser la file
-     * dans une boucle for-each.
+     * dans une boucle for-each. 
+     * exemple:
+     * for (E element : queue) {
+     *     System.out.println(element);
+     * }
      */
     
     /**

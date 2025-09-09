@@ -33,7 +33,9 @@ public class IntFIFO implements Queue<Integer> {
         
         // Si la file est pleine, retourner false
         if (size == capacity) {
-            return false;
+            System.out.println("La file est pleine, on ne peut plus ajouter d'élément");
+            resize();
+            System.out.println("La file à été redimensionnée: " + capacity);
         }
         
         // Calculer la nouvelle position rear
@@ -42,6 +44,13 @@ public class IntFIFO implements Queue<Integer> {
         size++;
         
         return true;
+    }
+
+    private void resize() {
+        Integer[] newArray = new Integer[capacity + 1];
+        System.arraycopy(array, 0, newArray, 0, capacity);
+        array = newArray;
+        capacity += 1;
     }
     
     @Override
@@ -75,22 +84,27 @@ public class IntFIFO implements Queue<Integer> {
     public int size() {
         return size;
     }
+
+    public int capacity() {
+        return capacity;
+    }
     
     @Override
     public Iterator<Integer> iterator() {
         return new IntegerQueueIterator();
     }
     
+
     /**
      * Itérateur pour parcourir les éléments de la file
      */
     private class IntegerQueueIterator implements Iterator<Integer> {
         private int currentIndex = 0;
-        private int elementsProcessed = 0;
+        private int elementsCounted = 0;
         
         @Override
         public boolean hasNext() {
-            return elementsProcessed < size;
+            return elementsCounted < size;
         }
         
         @Override
@@ -99,9 +113,10 @@ public class IntFIFO implements Queue<Integer> {
                 throw new NoSuchElementException("Aucun élément suivant");
             }
             
+            // parcourt circulaire donc on utilise le modulo
             Integer element = array[(front + currentIndex) % capacity];
             currentIndex++;
-            elementsProcessed++;
+            elementsCounted++;
             return element;
         }
     }
@@ -111,21 +126,32 @@ public class IntFIFO implements Queue<Integer> {
      */
     @Override
     public String toString() {
+        StringBuilder sb = new StringBuilder("[");
+
         if (isEmpty()) {
-            return "[]";
-        }
-        
-        StringBuilder sb = new StringBuilder();
-        sb.append("[");
-        
-        for (int i = 0; i < size; i++) {
-            if (i > 0) {
-                sb.append(", ");
+            for (int i = 0; i < this.capacity() - 1; i++) {
+                sb.append("None, ");
             }
-            sb.append(array[(front + i) % capacity]);
+            sb.append("None]");
+            return sb.toString();
         }
         
-        sb.append("]");
+        for (int i = 0; i < this.capacity(); i++) {
+            Integer element = array[(front + i) % capacity];
+            if (i < this.capacity() - 1) {
+                if (element != null) {
+                    sb.append(element + ", ");
+                } else {
+                    sb.append("None, ");
+                }
+            } else {
+                if (element != null) {
+                    sb.append(element + "]");
+                } else {
+                    sb.append("None]");
+                }
+            }
+        }
         return sb.toString();
     }
 }
