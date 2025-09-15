@@ -91,17 +91,15 @@ public class IntPriorityQueue implements Queue<Integer> {
         Integer minElement = heap[0]; // Le plus petit élément
         
         if (size == 1) {
-            // Cas spécial : un seul élément
+            // Si c'est le dernier élément, juste le supprimer
             heap[0] = null;
             size = 0;
         } else {
-            // Cas général : plusieurs éléments
+            // Remplacer par le dernier élément et réorganiser
             heap[0] = heap[size - 1]; // Remplacer par le dernier élément
             heap[size - 1] = null; // Libérer la référence
             size--;
-            
-            // Réorganiser le tas pour maintenir la propriété
-            heapifyDown(0);
+            heapifyDown(0); // Réorganiser le tas
         }
         
         return minElement;
@@ -181,16 +179,27 @@ public class IntPriorityQueue implements Queue<Integer> {
     public String toString() {
         StringBuilder sb = new StringBuilder("[");
 
-        for (int i = 0; i < this.capacity(); i++) {
+        if (isEmpty()) {
+            for (int i = 0; i < this.capacity() - 1; i++) {
+                sb.append("None, ");
+            }
+            sb.append("None]");
+            return sb.toString();
+        }
+        
+        // Afficher les éléments dans l'ordre du tas (heap)
+        for (int i = 0; i < size; i++) {
             if (i > 0) {
                 sb.append(", ");
             }
-            if (i < size && heap[i] != null) {
-                sb.append(heap[i]);
-            } else {
-                sb.append("None");
-            }
+            sb.append(heap[i]);
         }
+        
+        // Afficher les emplacements vides restants
+        for (int i = size; i < capacity; i++) {
+            sb.append(", None");
+        }
+        
         sb.append("]");
         return sb.toString();
     }

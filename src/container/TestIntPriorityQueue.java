@@ -141,6 +141,7 @@ public class TestIntPriorityQueue {
         assert queue.element() == 42 : "L'élément unique devrait être 42";
         System.out.println("Insertion de l'élément réussi : " + queue);
         assert queue.popElement() == 42 : "Suppression de l'élément unique";
+        queue.popElement();
         System.out.println("Suppression de l'élément réussi : " + queue);
         assert queue.isEmpty() : "La file devrait être vide après suppression";
         
@@ -158,18 +159,19 @@ public class TestIntPriorityQueue {
     }
     
     private static void testIterateur() {
-        System.out.println("\n--- Test 6: Itérateur ---");
+        System.out.println("\n--- Test 6 : Itérateur ---");
         
         IntPriorityQueue queue = new IntPriorityQueue(4);
         queue.insertElement(40);
         queue.insertElement(10);
         queue.insertElement(30);
         queue.insertElement(20);
+        System.out.println("Liste des éléments : " + queue);
         
-        System.out.println("  Parcours avec itérateur:");
+        System.out.println("Parcours avec itérateur:");
         int count = 0;
         for (Integer element : queue) {
-            System.out.println("    Élément " + count + ": " + element);
+            System.out.println("Élément " + count + " : " + element);
             count++;
         }
         
@@ -188,7 +190,7 @@ public class TestIntPriorityQueue {
             queue.insertElement(null);
             assert false : "Devrait lever une exception pour null";
         } catch (IllegalArgumentException e) {
-            System.out.println("✓ Exception correcte pour null: " + e.getMessage());
+            System.out.println("✓ Exception correcte pour null pour insertElement : " + e.getMessage());
         }
         
         // Test element() sur file vide
@@ -196,7 +198,7 @@ public class TestIntPriorityQueue {
             queue.element();
             assert false : "Devrait lever une exception pour file vide";
         } catch (NoSuchElementException e) {
-            System.out.println("✓ Exception correcte pour file vide: " + e.getMessage());
+            System.out.println("✓ Exception correcte pour file vide pour element : " + e.getMessage());
         }
         
         // Test popElement() sur file vide
@@ -204,15 +206,15 @@ public class TestIntPriorityQueue {
             queue.popElement();
             assert false : "Devrait lever une exception pour file vide";
         } catch (NoSuchElementException e) {
-            System.out.println("✓ Exception correcte pour file vide: " + e.getMessage());
+            System.out.println("✓ Exception correcte pour file vide pour popElement : " + e.getMessage());
         }
-        
+    
         // Test constructeur avec capacité invalide
         try {
             new IntPriorityQueue(0);
             assert false : "Devrait lever une exception pour capacité 0";
         } catch (IllegalArgumentException e) {
-            System.out.println("✓ Exception correcte pour capacité invalide: " + e.getMessage());
+            System.out.println("✓ Exception correcte pour capacité invalide à la création : " + e.getMessage());
         }
     }
 }
