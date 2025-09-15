@@ -2,6 +2,7 @@
 *.class
 bin/
 target/
+lib/
 
 # Fichiers de sauvegarde
 ../backup_local/

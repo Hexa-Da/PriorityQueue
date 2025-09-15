@@ -37,7 +37,7 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
         size++;
         
         // Réorganiser le tas pour maintenir la propriété
-        heapifyUp(size - 1);
+        heapIfyUp(size - 1);
         
         return true;
     }
@@ -50,20 +50,20 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
         capacity = newCapacity;
     }
 
-    private void heapifyUp(int index) {
+    private void heapIfyUp(int index) {
         while (index > 0) {
             int parentIndex = (index - 1) / 2;
             
             // Vérifier que les éléments ne sont pas null avant comparaison
             if (heap[index] != null && heap[parentIndex] != null) {
                 // Dans IntPriorityQueue, on compare directement les Integer avec <
-                // Ici on doit caster les Object en E et utiliser compareTo car on ne sait pas
+                // Ici, on doit caster les Object en E et utiliser compareTo car on ne sait pas
                 // quel type sera utilisé, on sait juste qu'il implémente Comparable<E>
                 E current = (E) heap[index];
                 E parent = (E) heap[parentIndex];
                 
                 if (current.compareTo(parent) >= 0) {
-                    break; // La propriété de tas est respectée
+                    break; // La propriété de tas est respectée !
                 }
                 swap(index, parentIndex);
                 index = parentIndex;
@@ -102,14 +102,16 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
             heap[0] = heap[size - 1]; 
             heap[size - 1] = null;
             size--;
-            heapifyDown(0);
+            int index = 0;
+            heapIfyDown(index);
         }
         
         return minElement;
     }
 
-    private void heapifyDown(int index) {
+    private void heapIfyDown(int index) {
         while (true) {
+
             int smallest = index;
             int leftChild = 2 * index + 1;
             int rightChild = 2 * index + 2;
@@ -133,7 +135,7 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
             }
             
             if (smallest == index) {
-                break; // La propriété de tas est respectée
+                break; // La propriété de tas est respectée !
             }
             
             swap(index, smallest);
@@ -192,9 +194,7 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
         StringBuilder sb = new StringBuilder("[");
 
         if (isEmpty()) {
-            for (int i = 0; i < this.capacity() - 1; i++) {
-                sb.append("None, ");
-            }
+            sb.append("None, ".repeat(Math.max(0, this.capacity() - 1)));
             sb.append("None]");
             return sb.toString();
         }
@@ -208,9 +208,7 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
         }
         
         // Afficher les emplacements vides restants
-        for (int i = size; i < capacity; i++) {
-            sb.append(", None");
-        }
+        sb.append(", None".repeat(Math.max(0, capacity - size)));
         
         sb.append("]");
         return sb.toString();

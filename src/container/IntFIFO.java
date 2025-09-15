@@ -50,8 +50,8 @@ public class IntFIFO implements Queue<Integer> {
         Integer[] newArray = new Integer[newCapacity];
         
         // Copier les éléments dans l'ordre logique (du front au rear)
-        /** 
-         System.arraycopy(array, 0, newArray, 0, capacity) copie les éléments 
+        /*
+         System.arraycopy(array, 0, newArray, 0, capacity) copie les éléments
          de 0 à capacity-1, mais dans un tableau circulaire,
          les éléments peuvent être à des positions différentes
          */
@@ -141,9 +141,7 @@ public class IntFIFO implements Queue<Integer> {
         StringBuilder sb = new StringBuilder("[");
 
         if (isEmpty()) {
-            for (int i = 0; i < this.capacity() - 1; i++) {
-                sb.append("None, ");
-            }
+            sb.append("None, ".repeat(Math.max(0, this.capacity() - 1)));
             sb.append("None]");
             return sb.toString();
         }
@@ -152,13 +150,13 @@ public class IntFIFO implements Queue<Integer> {
             Integer element = array[(front + i) % capacity];
             if (i < this.capacity() - 1) {
                 if (i < size) {
-                    sb.append(element + ", ");
+                    sb.append(element).append(", ");
                 } else {
                     sb.append("None, ");
                 }
             } else {
                 if (i < size) {
-                    sb.append(element + "]");
+                    sb.append(element).append("]");
                 } else {
                     sb.append("None]");
                 }

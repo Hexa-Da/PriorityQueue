@@ -1,0 +1,145 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Queue</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">container</a>
+</div>
+
+<h1>Coverage Summary for Class: Queue (container)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">Queue</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package container;
+&nbsp;
+&nbsp;// Import de l&#39;exception NoSuchElementException pour les cas où la file est vide
+&nbsp;import java.util.NoSuchElementException;
+&nbsp;
+&nbsp;/**
+&nbsp; * Interface Queue&lt;E&gt; - Définit le contrat pour une structure de données de type &quot;file&quot;
+&nbsp; * Une file (queue) est une structure de données linéaire qui suit le principe FIFO
+&nbsp; * (First In, First Out) : le premier élément ajouté est le premier à être retiré.
+&nbsp; * 
+&nbsp; * @param &lt;E&gt; Le type générique des éléments stockés dans la file. E est un paramètre
+&nbsp; *           de type qui peut représenter n&#39;importe quel type d&#39;objet Java (Integer,
+&nbsp; *           String, Object personnalisé, etc.). Il permet de créer une file qui peut
+&nbsp; *           stocker n&#39;importe quel type d&#39;élément de manière type-safe.
+&nbsp; */
+&nbsp;
+&nbsp;public interface Queue&lt;E&gt; extends Iterable&lt;E&gt; { 
+&nbsp;    /**
+&nbsp;     * L&#39;interface Iterable&lt;E&gt; permet de parcourir les éléments de la file
+&nbsp;     * de manière séquentielle, du premier au dernier élément, sans modifier
+&nbsp;     * la structure de la file. Cela permet notamment d&#39;utiliser la file
+&nbsp;     * dans une boucle for-each. 
+&nbsp;     * exemple:
+&nbsp;     * for (E element : queue) {
+&nbsp;     *     System.out.println(element);
+&nbsp;     * }
+&nbsp;     */
+&nbsp;    
+&nbsp;    /**
+&nbsp;     * Ajoute un élément à la fin de la file
+&nbsp;     * 
+&nbsp;     * Cette méthode insère l&#39;élément spécifié à la fin de la file. Si la capacité
+&nbsp;     * actuelle n&#39;est pas suffisante, la capacité de la file peut être augmentée
+&nbsp;     * automatiquement selon l&#39;implémentation.
+&nbsp;     * 
+&nbsp;     * @param e L&#39;élément à ajouter à la file (ne doit pas être null)
+&nbsp;     * @return true si l&#39;élément a été ajouté avec succès, false sinon
+&nbsp;     * @throws IllegalArgumentException si l&#39;élément est null (selon l&#39;implémentation)
+&nbsp;     */
+&nbsp;    boolean insertElement(E e);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Consulte le premier élément de la file SANS le supprimer
+&nbsp;     * 
+&nbsp;     * Cette méthode permet de &quot;regarder&quot; le premier élément de la file (celui qui
+&nbsp;     * sera le prochain à être retiré) sans le supprimer de la structure.
+&nbsp;     * 
+&nbsp;     * @return Le premier élément de la file (le plus ancien)
+&nbsp;     * @throws NoSuchElementException si la file est vide (aucun élément à consulter)
+&nbsp;     */
+&nbsp;    E element();
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retire et retourne le premier élément de la file
+&nbsp;     * 
+&nbsp;     * Cette méthode suit le principe FIFO : elle retire le premier élément ajouté
+&nbsp;     * (le plus ancien) et le retourne. Après cet appel, l&#39;élément n&#39;est plus dans la file.
+&nbsp;     * 
+&nbsp;     * @return Le premier élément de la file (celui qui vient d&#39;être retiré)
+&nbsp;     * @throws NoSuchElementException si la file est vide (aucun élément à retirer)
+&nbsp;     */
+&nbsp;    E popElement();
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Vérifie si la file est vide
+&nbsp;     * 
+&nbsp;     * @return true si la file ne contient aucun élément, false sinon
+&nbsp;     */
+&nbsp;    boolean isEmpty();
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retourne le nombre d&#39;éléments actuellement dans la file
+&nbsp;     * 
+&nbsp;     * @return Le nombre d&#39;éléments dans la file (0 si la file est vide)
+&nbsp;     */
+&nbsp;    int size();
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-09-15 23:33</div>
+</div>
+</body>
+</html>

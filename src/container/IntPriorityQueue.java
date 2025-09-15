@@ -38,7 +38,7 @@ public class IntPriorityQueue implements Queue<Integer> {
         size++;
         
         // Réorganiser le tas pour maintenir la propriété de tas
-        heapifyUp(size - 1);
+        heapIfyUp(size - 1);
         
         return true;
     }
@@ -52,13 +52,13 @@ public class IntPriorityQueue implements Queue<Integer> {
     }
     
     // Méthode pour maintenir la propriété de tas lors de l'ajout
-    private void heapifyUp(int index) {
+    private void heapIfyUp(int index) {
         while (index > 0) {
             int parentIndex = (index - 1) / 2;
             // Vérifier que les éléments ne sont pas null avant comparaison
             if (heap[index] != null && heap[parentIndex] != null 
                 && heap[index] >= heap[parentIndex]) {
-                break; // La propriété de tas est respectée
+                break; // La propriété de tas est respectée !
             }
             // Échanger avec le parent
             swap(index, parentIndex);
@@ -98,14 +98,15 @@ public class IntPriorityQueue implements Queue<Integer> {
             heap[0] = heap[size - 1]; // Remplacer par le dernier élément
             heap[size - 1] = null; // Libérer la référence
             size--;
-            heapifyDown(0); // Réorganiser le tas
+            int index = 0;
+            heapIfyDown(index); // Réorganiser le tas
         }
         
         return minElement;
     }
 
     // Méthode pour maintenir la propriété de tas lors de la suppression
-    private void heapifyDown(int index) {
+    private void heapIfyDown(int index) {
         while (true) {
             int smallest = index;
             int leftChild = 2 * index + 1;
@@ -124,7 +125,7 @@ public class IntPriorityQueue implements Queue<Integer> {
             }
             
             if (smallest == index) {
-                break; // La propriété de tas est respectée
+                break; // La propriété de tas est respectée !
             }
             
             swap(index, smallest);
@@ -183,9 +184,7 @@ public class IntPriorityQueue implements Queue<Integer> {
         StringBuilder sb = new StringBuilder("[");
 
         if (isEmpty()) {
-            for (int i = 0; i < this.capacity() - 1; i++) {
-                sb.append("None, ");
-            }
+            sb.append("None, ".repeat(Math.max(0, this.capacity() - 1)));
             sb.append("None]");
             return sb.toString();
         }
@@ -199,9 +198,7 @@ public class IntPriorityQueue implements Queue<Integer> {
         }
         
         // Afficher les emplacements vides restants
-        for (int i = size; i < capacity; i++) {
-            sb.append(", None");
-        }
+        sb.append(", None".repeat(Math.max(0, capacity - size)));
         
         sb.append("]");
         return sb.toString();
