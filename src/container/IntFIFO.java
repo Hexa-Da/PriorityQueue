@@ -1,6 +1,7 @@
+package container;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import container.Queue;
 
 /**
  * Implémentation FIFO non générique d'une file pour le type Integer
@@ -34,6 +35,7 @@ public class IntFIFO implements Queue<Integer> {
         // Si la file est pleine, retourner false
         if (size == capacity) {
             System.out.println("La file est pleine, on ne peut plus ajouter d'élément");
+            // return false (selon interprétation de l'énoncé)
             resize();
             System.out.println("La file à été redimensionnée: " + capacity);
         }
@@ -88,16 +90,16 @@ public class IntFIFO implements Queue<Integer> {
     public int capacity() {
         return capacity;
     }
+
     
+    /**
+     * Itérateur pour parcourir les éléments de la file
+     */
     @Override
     public Iterator<Integer> iterator() {
         return new IntegerQueueIterator();
     }
     
-
-    /**
-     * Itérateur pour parcourir les éléments de la file
-     */
     private class IntegerQueueIterator implements Iterator<Integer> {
         private int currentIndex = 0;
         private int elementsCounted = 0;
@@ -139,13 +141,13 @@ public class IntFIFO implements Queue<Integer> {
         for (int i = 0; i < this.capacity(); i++) {
             Integer element = array[(front + i) % capacity];
             if (i < this.capacity() - 1) {
-                if (element != null) {
+                if (i < size) {
                     sb.append(element + ", ");
                 } else {
                     sb.append("None, ");
                 }
             } else {
-                if (element != null) {
+                if (i < size) {
                     sb.append(element + "]");
                 } else {
                     sb.append("None]");

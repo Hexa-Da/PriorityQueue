@@ -1,4 +1,4 @@
-import container.Queue;
+package container;
 
 /**
  * Test simple pour IntFIFO
