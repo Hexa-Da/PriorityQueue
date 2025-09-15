@@ -49,10 +49,23 @@ public class IntFIFO implements Queue<Integer> {
     }
 
     private void resize() {
-        Integer[] newArray = new Integer[capacity + 1];
-        System.arraycopy(array, 0, newArray, 0, capacity);
+        int newCapacity = capacity * 2; // Doubler la capacité pour éviter les redimensionnements fréquents
+        Integer[] newArray = new Integer[newCapacity];
+        
+        // Copier les éléments dans l'ordre logique (du front au rear)
+        /** 
+         System.arraycopy(array, 0, newArray, 0, capacity) copie les éléments 
+         de 0 à capacity-1, mais dans un tableau circulaire,
+         les éléments peuvent être à des positions différentes
+         */
+        for (int i = 0; i < size; i++) {
+            newArray[i] = array[(front + i) % capacity];
+        }
+        
         array = newArray;
-        capacity += 1;
+        capacity = newCapacity;
+        front = 0;  // Réinitialiser front à 0
+        rear = size - 1;  // Rear pointe vers le dernier élément
     }
     
     @Override

@@ -4,120 +4,130 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * Implémentation d'une file de priorité non générique pour le type Integer
- * utilisant un tas (heap) binaire
+ * Implémentation générique d'une file de priorité utilisant un tas (heap) binaire
+ * Les éléments doivent implémenter l'interface Comparable<E>
  */
-public class IntPriorityQueue implements Queue<Integer> {
+@SuppressWarnings("unchecked") // Pour éviter les warnings de type erasure
+public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
     
-    private Integer[] heap;  // Tableau représentant le tas
-    private int size;        // Nombre d'éléments dans le tas
-    private int capacity;    // Capacité maximale du tableau
- 
-    public IntPriorityQueue(int capacity) {
+    private Object[] heap; // Tableau d'Object pour éviter les problèmes de type erasure
+    private int size;
+    private int capacity;
+    
+    public GenPriorityQueue(int capacity) {
         if (capacity <= 0) {
             throw new IllegalArgumentException("La capacité doit être positive");
         }
         this.capacity = capacity;
-        this.heap = new Integer[capacity];
         this.size = 0;
+        this.heap = new Object[capacity];
     }
     
-    @Override
-    public boolean insertElement(Integer e) {
-        if (e == null) {
+    public boolean insertElement(E element) {
+        if (element == null) {
             throw new IllegalArgumentException("Les éléments null ne sont pas autorisés");
         }
         
-        // Si le tas est plein, redimensionner
         if (size == capacity) {
             System.out.println("La file est pleine, on ne peut plus ajouter d'élément");
-            // return false (selon interprétation de l'énoncé)
             resize();
             System.out.println("La file a été redimensionnée (capacity : " + capacity + ")");
+
         }
         
         // Ajouter l'élément à la fin du tas
-        heap[size] = e;
+        heap[size] = element;
         size++;
         
-        // Réorganiser le tas pour maintenir la propriété de tas
+        // Réorganiser le tas pour maintenir la propriété
         heapifyUp(size - 1);
         
         return true;
     }
-
+    
     private void resize() {
         int newCapacity = capacity * 2; // Doubler la capacité pour éviter les redimensionnements fréquents
-        Integer[] newHeap = new Integer[newCapacity];
+        Object[] newHeap = new Object[newCapacity];
         System.arraycopy(heap, 0, newHeap, 0, size);
         heap = newHeap;
         capacity = newCapacity;
     }
-    
-    // Méthode pour maintenir la propriété de tas lors de l'ajout
+
     private void heapifyUp(int index) {
         while (index > 0) {
             int parentIndex = (index - 1) / 2;
-            if (heap[index] >= heap[parentIndex]) {
+            
+            // Dans IntPriorityQueue, on compare directement les Integer avec <
+            // Ici on doit caster les Object en E et utiliser compareTo car on ne sait pas
+            // quel type sera utilisé, on sait juste qu'il implémente Comparable<E>
+            E current = (E) heap[index];
+            E parent = (E) heap[parentIndex];
+            
+            if (current.compareTo(parent) >= 0) {
                 break; // La propriété de tas est respectée
             }
-            // Échanger avec le parent
             swap(index, parentIndex);
             index = parentIndex;
         }
     }
-    
-    // Méthode utilitaire pour échanger deux éléments
+
     private void swap(int i, int j) {
-        Integer temp = heap[i];
+        E temp = (E) heap[i];
         heap[i] = heap[j];
         heap[j] = temp;
     }
-    
+
     @Override
-    public Integer element() {
+    public E element() {
         if (isEmpty()) {
             throw new NoSuchElementException("La file est vide");
         }
-        return heap[0]; // Le plus petit élément est toujours à la racine
+        return (E) heap[0]; // Cast vers E
     }
     
     @Override
-    public Integer popElement() {
+    public E popElement() {
         if (isEmpty()) {
             throw new NoSuchElementException("La file est vide");
         }
         
-        Integer minElement = heap[0]; // Le plus petit élément
+        E minElement = (E) heap[0]; 
         
         if (size == 1) {
-            // Si c'est le dernier élément, juste le supprimer
             heap[0] = null;
             size = 0;
         } else {
-            // Remplacer par le dernier élément et réorganiser
-            heap[0] = heap[size - 1]; // Remplacer par le dernier élément
-            heap[size - 1] = null; // Libérer la référence
+            heap[0] = heap[size - 1]; 
+            heap[size - 1] = null;
             size--;
-            heapifyDown(0); // Réorganiser le tas
+            heapifyDown(0);
         }
         
         return minElement;
     }
 
-    // Méthode pour maintenir la propriété de tas lors de la suppression
     private void heapifyDown(int index) {
         while (true) {
             int smallest = index;
             int leftChild = 2 * index + 1;
             int rightChild = 2 * index + 2;
             
-            if (leftChild < size && heap[leftChild] < heap[smallest]) {
-                smallest = leftChild;
+            if (leftChild < size) {
+                E left = (E) heap[leftChild];
+                E current = (E) heap[smallest];
+                // On compare les éléments avec compareTo
+                if (left.compareTo(current) < 0) {
+                    smallest = leftChild;
+                }
             }
             
-            if (rightChild < size && heap[rightChild] < heap[smallest]) {
-                smallest = rightChild;
+            if (rightChild < size) {
+                E right = (E) heap[rightChild];
+                E current = (E) heap[smallest];
+                // On compare les éléments avec compareTo
+                if (right.compareTo(current) < 0) {
+                    smallest = rightChild;
+                }
             }
             
             if (smallest == index) {
@@ -138,21 +148,21 @@ public class IntPriorityQueue implements Queue<Integer> {
     public int size() {
         return size;
     }
-
+    
     public int capacity() {
         return capacity;
     }
-    
+
 
     /**
-     * Itérateur pour parcourir les éléments de la file de priorité
+     * Itérateur pour la file de priorité générique
      */
     @Override
-    public Iterator<Integer> iterator() {
-        return new IntegerPriorityQueueIterator();
+    public Iterator<E> iterator() {
+        return new GenericPriorityQueueIterator();
     }
     
-    private class IntegerPriorityQueueIterator implements Iterator<Integer> {
+    private class GenericPriorityQueueIterator implements Iterator<E> {
         private int currentIndex = 0;
         
         @Override
@@ -161,12 +171,12 @@ public class IntPriorityQueue implements Queue<Integer> {
         }
         
         @Override
-        public Integer next() {
+        public E next() {
             if (!hasNext()) {
                 throw new NoSuchElementException("Aucun élément suivant");
             }
             
-            Integer element = heap[currentIndex];
+            E element = (E) heap[currentIndex]; // Cast vers E
             currentIndex++;
             return element;
         }
