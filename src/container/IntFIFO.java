@@ -32,12 +32,9 @@ public class IntFIFO implements Queue<Integer> {
             throw new IllegalArgumentException("Les éléments null ne sont pas autorisés");
         }
         
-        // Si la file est pleine, retourner false
+        // Si la file est pleine
         if (size == capacity) {
-            System.out.println("La file est pleine, on ne peut plus ajouter d'élément");
-            // return false (selon interprétation de l'énoncé)
             resize();
-            System.out.println("La file à été redimensionnée: " + capacity);
         }
         
         // Calculer la nouvelle position rear
@@ -49,7 +46,7 @@ public class IntFIFO implements Queue<Integer> {
     }
 
     private void resize() {
-        int newCapacity = capacity * 2; // Doubler la capacité pour éviter les redimensionnements fréquents
+        int newCapacity = capacity + 1; 
         Integer[] newArray = new Integer[newCapacity];
         
         // Copier les éléments dans l'ordre logique (du front au rear)

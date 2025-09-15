@@ -30,10 +30,7 @@ public class IntPriorityQueue implements Queue<Integer> {
         
         // Si le tas est plein, redimensionner
         if (size == capacity) {
-            System.out.println("La file est pleine, on ne peut plus ajouter d'élément");
-            // return false (selon interprétation de l'énoncé)
             resize();
-            System.out.println("La file a été redimensionnée (capacity : " + capacity + ")");
         }
         
         // Ajouter l'élément à la fin du tas
@@ -47,7 +44,7 @@ public class IntPriorityQueue implements Queue<Integer> {
     }
 
     private void resize() {
-        int newCapacity = capacity * 2; // Doubler la capacité pour éviter les redimensionnements fréquents
+        int newCapacity = capacity + 1; 
         Integer[] newHeap = new Integer[newCapacity];
         System.arraycopy(heap, 0, newHeap, 0, size);
         heap = newHeap;
@@ -58,7 +55,9 @@ public class IntPriorityQueue implements Queue<Integer> {
     private void heapifyUp(int index) {
         while (index > 0) {
             int parentIndex = (index - 1) / 2;
-            if (heap[index] >= heap[parentIndex]) {
+            // Vérifier que les éléments ne sont pas null avant comparaison
+            if (heap[index] != null && heap[parentIndex] != null 
+                && heap[index] >= heap[parentIndex]) {
                 break; // La propriété de tas est respectée
             }
             // Échanger avec le parent
@@ -112,11 +111,15 @@ public class IntPriorityQueue implements Queue<Integer> {
             int leftChild = 2 * index + 1;
             int rightChild = 2 * index + 2;
             
-            if (leftChild < size && heap[leftChild] < heap[smallest]) {
+            // Vérifier l'enfant gauche
+            if (leftChild < size && heap[leftChild] != null && heap[smallest] != null 
+                && heap[leftChild] < heap[smallest]) {
                 smallest = leftChild;
             }
             
-            if (rightChild < size && heap[rightChild] < heap[smallest]) {
+            // Vérifier l'enfant droit
+            if (rightChild < size && heap[rightChild] != null && heap[smallest] != null 
+                && heap[rightChild] < heap[smallest]) {
                 smallest = rightChild;
             }
             
