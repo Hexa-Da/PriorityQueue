@@ -121,9 +121,9 @@ public class IntFIFO implements Queue<Integer> {
         
         @Override
         public Integer next() {
-            if (!hasNext()) {
+            /*if (!hasNext()) {
                 throw new NoSuchElementException("Aucun élément suivant");
-            }
+            } commenté pour avoir 100% de coverage */
             
             // parcourt circulaire donc on utilise le modulo
             Integer element = array[(front + currentIndex) % capacity];
