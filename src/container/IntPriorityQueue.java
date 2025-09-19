@@ -56,6 +56,16 @@ public class IntPriorityQueue implements Queue<Integer> {
         while (index > 0) {
             int parentIndex = (index - 1) / 2;
             
+            // Vérifications de sécurité pour éviter les boucles infinies
+            if (parentIndex < 0 || parentIndex >= capacity) {
+                break;
+            }
+            
+            // Vérifier que les éléments ne sont pas null avant comparaison
+            if (heap[index] == null || heap[parentIndex] == null) {
+                break;
+            }
+            
             // Si la propriété de tas est respectée, arrêter
             if (heap[index] >= heap[parentIndex]) {
                 break;
@@ -108,18 +118,28 @@ public class IntPriorityQueue implements Queue<Integer> {
 
     // Méthode pour maintenir la propriété de tas lors de la suppression
     private void heapIfyDown(int index) {
-        while (true) {
+        int maxIterations = size; // Protection contre les boucles infinies
+        int iterations = 0;
+        
+        while (iterations < maxIterations) {
             int smallest = index;
             int leftChild = 2 * index + 1;
             int rightChild = 2 * index + 2;
             
+            // Vérifier que l'index est valide
+            if (index < 0 || index >= size) {
+                break;
+            }
+            
             // Vérifier l'enfant gauche
-            if (leftChild < size && heap[leftChild] < heap[smallest]) {
+            if (leftChild < size && heap[leftChild] != null && heap[smallest] != null 
+                && heap[leftChild] < heap[smallest]) {
                 smallest = leftChild;
             }
             
             // Vérifier l'enfant droit
-            if (rightChild < size && heap[rightChild] < heap[smallest]) {
+            if (rightChild < size && heap[rightChild] != null && heap[smallest] != null 
+                && heap[rightChild] < heap[smallest]) {
                 smallest = rightChild;
             }
             
@@ -130,6 +150,7 @@ public class IntPriorityQueue implements Queue<Integer> {
             
             swap(index, smallest);
             index = smallest;
+            iterations++;
         }
     }
     
@@ -166,9 +187,9 @@ public class IntPriorityQueue implements Queue<Integer> {
         
         @Override
         public Integer next() {
-            /*if (!hasNext()) {
+            if (!hasNext()) {
                 throw new NoSuchElementException("Aucun élément suivant");
-            } commenté pour avoir 100% de coverage */
+            }
             
             Integer element = heap[currentIndex];
             currentIndex++;

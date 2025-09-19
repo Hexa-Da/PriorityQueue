@@ -54,6 +54,16 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
         while (index > 0) {
             int parentIndex = (index - 1) / 2;
             
+            // Vérifications de sécurité pour éviter les boucles infinies
+            if (parentIndex < 0 || parentIndex >= capacity) {
+                break;
+            }
+            
+            // Vérifier que les éléments ne sont pas null avant comparaison
+            if (heap[index] == null || heap[parentIndex] == null) {
+                break;
+            }
+            
             // Caster et comparer les éléments
             E current = (E) heap[index];
             E parent = (E) heap[parentIndex];
@@ -105,13 +115,21 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
     }
 
     private void heapIfyDown(int index) {
-        while (true) {
+        int maxIterations = size; // Protection contre les boucles infinies
+        int iterations = 0;
+        
+        while (iterations < maxIterations) {
             int smallest = index;
             int leftChild = 2 * index + 1;
             int rightChild = 2 * index + 2;
             
+            // Vérifier que l'index est valide
+            if (index < 0 || index >= size) {
+                break;
+            }
+            
             // Vérifier l'enfant gauche
-            if (leftChild < size ) {
+            if (leftChild < size && heap[leftChild] != null && heap[smallest] != null) {
                 E left = (E) heap[leftChild];
                 E current = (E) heap[smallest];
                 // On compare les éléments avec compareTo
@@ -121,13 +139,13 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
             }
             
             // Vérifier l'enfant droit
-            if (rightChild < size ) {
+            if (rightChild < size && heap[rightChild] != null && heap[smallest] != null) {
                 E right = (E) heap[rightChild];
                 E current = (E) heap[smallest];
                 // On compare les éléments avec compareTo
-                /*if (right.compareTo(current) < 0) {
+                if (right.compareTo(current) < 0) {
                     smallest = rightChild;
-                } commenté pour avoir 100% de coverage */
+                }
             }
             
             // Si aucun échange n'est nécessaire, arrêter
@@ -137,6 +155,7 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
             
             swap(index, smallest);
             index = smallest;
+            iterations++;
         }
     }
     
