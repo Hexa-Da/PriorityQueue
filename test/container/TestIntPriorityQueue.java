@@ -3,6 +3,7 @@ package container;
 import java.util.NoSuchElementException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Timeout;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -18,27 +19,25 @@ public class TestIntPriorityQueue {
     }
     
     @Test
+    @Timeout(1) // 1 seconde maximum
     public void test_emptyCreation() {
-        System.out.println("=== Test: Création d'une priority queue vide ===");
         assertTrue(queue.isEmpty());
         assertEquals(0, queue.size());
         assertEquals(3, queue.capacity());
-        System.out.println("✓ Queue: " + queue.toString());
     }
     
     @Test
+    @Timeout(1) // 1 seconde maximum
     public void test_insertElement() {
-        System.out.println("=== Test: Insertion d'un élément dans la priority queue ===");
         assertTrue(queue.insertElement(10));
         assertFalse(queue.isEmpty());
         assertEquals(1, queue.size());
         assertEquals(10, queue.element());
-        System.out.println("✓ Queue: " + queue.toString());
     }
     
     @Test
+    @Timeout(1) // 1 seconde maximum
     public void test_insertMultipleElements() {
-        System.out.println("=== Test: Insertion de plusieurs éléments dans la priority queue ===");
         queue.insertElement(30);
         queue.insertElement(10);
         queue.insertElement(20);
@@ -46,24 +45,22 @@ public class TestIntPriorityQueue {
         assertEquals(3, queue.size());
         assertFalse(queue.isEmpty());
         assertEquals(10, queue.element()); // Le plus petit doit être à la racine
-        System.out.println("✓ Queue: " + queue.toString());
     }
     
     @Test
+    @Timeout(1) // 1 seconde maximum
     public void test_popElement() {
-        System.out.println("=== Test: Suppression d'un élément de la priority queue ===");
         queue.insertElement(30);
         queue.insertElement(10);
         queue.insertElement(20);
-        System.out.println("Avant pop: " + queue.toString());
         
         assertEquals(10, queue.popElement()); // Le plus petit en premier
         assertEquals(2, queue.size());
         assertEquals(20, queue.element()); // Le nouveau plus petit
-        System.out.println("✓ Après pop: " + queue.toString());
     }
     
     @Test
+    @Timeout(1) // 1 seconde maximum
     public void test_popAllElements() {
         System.out.println("=== Test: Suppression de tous les éléments de la priority queue ===");
         queue.insertElement(50);
@@ -87,6 +84,7 @@ public class TestIntPriorityQueue {
     }
     
     @Test
+    @Timeout(2) // 2 secondes pour le redimensionnement
     public void test_resize() {
         System.out.println("=== Test: Redimensionnement de la priority queue ===");
         queue.insertElement(10);
@@ -102,6 +100,7 @@ public class TestIntPriorityQueue {
     }
     
     @Test
+    @Timeout(1) // 1 seconde maximum
     public void test_priorityOrder() {
         System.out.println("=== Test: Ordre de priorité de la priority queue ===");
         queue.insertElement(100);
@@ -124,6 +123,7 @@ public class TestIntPriorityQueue {
     }
     
     @Test
+    @Timeout(1) // 1 seconde maximum
     public void test_duplicateElements() {
         System.out.println("=== Test: Éléments dupliqués dans la priority queue ===");
         queue.insertElement(10);
@@ -143,6 +143,7 @@ public class TestIntPriorityQueue {
     }
     
     @Test
+    @Timeout(1) // 1 seconde maximum
     public void test_insertNull() {
         System.out.println("=== Test: Insertion d'un élément null dans la priority queue ===");
         assertThrows(IllegalArgumentException.class, () -> {
@@ -152,6 +153,7 @@ public class TestIntPriorityQueue {
     }
     
     @Test
+    @Timeout(1) // 1 seconde maximum
     public void test_elementOnEmptyQueue() {
         System.out.println("=== Test: Accès à l'élément d'une priority queue vide ===");
         assertThrows(NoSuchElementException.class, () -> {
@@ -161,6 +163,7 @@ public class TestIntPriorityQueue {
     }
     
     @Test
+    @Timeout(1) // 1 seconde maximum
     public void test_popElementOnEmptyQueue() {
         System.out.println("=== Test: Suppression d'un élément d'une priority queue vide ===");
         assertThrows(NoSuchElementException.class, () -> {
@@ -170,6 +173,7 @@ public class TestIntPriorityQueue {
     }
     
     @Test
+    @Timeout(1) // 1 seconde maximum
     public void test_invalidCapacity() {
         System.out.println("=== Test: Création avec une capacité invalide ===");
         assertThrows(IllegalArgumentException.class, () -> {
@@ -179,6 +183,7 @@ public class TestIntPriorityQueue {
     }
     
     @Test
+    @Timeout(2) // 2 secondes pour l'itération
     public void test_iterator() {
         System.out.println("=== Test: Itération sur la priority queue ===");
         queue.insertElement(30);

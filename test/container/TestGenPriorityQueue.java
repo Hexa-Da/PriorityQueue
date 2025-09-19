@@ -3,6 +3,7 @@ package container;
 import java.util.NoSuchElementException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Timeout;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -20,6 +21,7 @@ public class TestGenPriorityQueue {
     }
     
     @Test
+    @Timeout(1) // 1 seconde maximum
     public void test_emptyCreation() {
         System.out.println("=== Test: Création d'une GenPriorityQueue vide ===");
         assertTrue(intQueue.isEmpty());
@@ -29,6 +31,7 @@ public class TestGenPriorityQueue {
     }
     
     @Test
+    @Timeout(1) // 1 seconde maximum
     public void test_insertInteger() {
         System.out.println("=== Test: Insertion d'un entier dans la GenPriorityQueue ===");
         assertTrue(intQueue.insertElement(10));
@@ -39,6 +42,7 @@ public class TestGenPriorityQueue {
     }
     
     @Test
+    @Timeout(1) // 1 seconde maximum
     public void test_insertString() {
         System.out.println("=== Test: Insertion d'une chaîne dans la GenPriorityQueue ===");
         assertTrue(stringQueue.insertElement("Alice"));
@@ -87,6 +91,7 @@ public class TestGenPriorityQueue {
     }
     
     @Test
+    @Timeout(2) // 2 secondes pour le redimensionnement
     public void test_resize() {
         System.out.println("=== Test: Redimensionnement de la GenPriorityQueue ===");
         intQueue.insertElement(10);

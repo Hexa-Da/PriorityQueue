@@ -3,6 +3,7 @@ package container;
 import java.util.NoSuchElementException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Timeout;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -18,6 +19,7 @@ public class TestIntFIFO {
     }
     
     @Test
+    @Timeout(1) // 1 seconde maximum
     public void test_emptyCreation() {
         System.out.println("=== Test: Création d'une queue vide ===");
         assertTrue(queue.isEmpty());
@@ -27,6 +29,7 @@ public class TestIntFIFO {
     }
     
     @Test
+    @Timeout(1) // 1 seconde maximum
     public void test_insertElement() {
         System.out.println("=== Test: Insertion d'un élément ===");
         assertTrue(queue.insertElement(10));
@@ -50,6 +53,7 @@ public class TestIntFIFO {
     }
     
     @Test
+    @Timeout(1) // 1 seconde maximum
     public void test_popElement() {
         System.out.println("=== Test: Suppression d'un élément ===");
         queue.insertElement(10);
@@ -80,6 +84,7 @@ public class TestIntFIFO {
     }
     
     @Test
+    @Timeout(2) // 2 secondes pour le redimensionnement
     public void test_resize() {
         System.out.println("=== Test: Redimensionnement de la queue ===");
         queue.insertElement(10);
