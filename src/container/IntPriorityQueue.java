@@ -56,11 +56,6 @@ public class IntPriorityQueue implements Queue<Integer> {
         while (index > 0) {
             int parentIndex = (index - 1) / 2;
             
-            // Vérifier que les éléments ne sont pas null avant comparaison
-            if (heap[index] == null || heap[parentIndex] == null) {
-                break;
-            }
-            
             // Si la propriété de tas est respectée, arrêter
             if (heap[index] >= heap[parentIndex]) {
                 break;
@@ -119,14 +114,12 @@ public class IntPriorityQueue implements Queue<Integer> {
             int rightChild = 2 * index + 2;
             
             // Vérifier l'enfant gauche
-            if (leftChild < size && heap[leftChild] != null && heap[smallest] != null 
-                && heap[leftChild] < heap[smallest]) {
+            if (leftChild < size && heap[leftChild] < heap[smallest]) {
                 smallest = leftChild;
             }
             
             // Vérifier l'enfant droit
-            if (rightChild < size && heap[rightChild] != null && heap[smallest] != null 
-                && heap[rightChild] < heap[smallest]) {
+            if (rightChild < size && heap[rightChild] < heap[smallest]) {
                 smallest = rightChild;
             }
             

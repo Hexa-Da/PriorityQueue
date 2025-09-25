@@ -54,11 +54,6 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
         while (index > 0) {
             int parentIndex = (index - 1) / 2;
             
-            // Vérifier que les éléments ne sont pas null avant comparaison
-            if (heap[index] == null || heap[parentIndex] == null) {
-                break;
-            }
-            
             // Caster et comparer les éléments
             E current = (E) heap[index];
             E parent = (E) heap[parentIndex];
@@ -116,7 +111,7 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
             int rightChild = 2 * index + 2;
             
             // Vérifier l'enfant gauche
-            if (leftChild < size && heap[leftChild] != null && heap[smallest] != null) {
+            if (leftChild < size) {
                 E left = (E) heap[leftChild];
                 E current = (E) heap[smallest];
                 // On compare les éléments avec compareTo
@@ -126,7 +121,7 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
             }
             
             // Vérifier l'enfant droit
-            if (rightChild < size && heap[rightChild] != null && heap[smallest] != null) {
+            if (rightChild < size) {
                 E right = (E) heap[rightChild];
                 E current = (E) heap[smallest];
                 // On compare les éléments avec compareTo
