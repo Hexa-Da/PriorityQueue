@@ -60,14 +60,14 @@ public class TestGenPriorityQueue {
         intQueue.insertElement(20);
         
         assertEquals(3, intQueue.size());
-        assertEquals(10, intQueue.element()); // Le plus petit en premier
+        assertEquals(30, intQueue.element()); // Le plus grand en premier
         System.out.println("Initial: " + intQueue.toString());
         
-        assertEquals(10, intQueue.popElement());
-        System.out.println("Après pop 10: " + intQueue.toString());
+        assertEquals(30, intQueue.popElement());
+        System.out.println("Après pop 30: " + intQueue.toString());
         assertEquals(20, intQueue.popElement());
         System.out.println("Après pop 20: " + intQueue.toString());
-        assertEquals(30, intQueue.popElement());
+        assertEquals(10, intQueue.popElement());
         System.out.println("✓ Final: " + intQueue.toString());
     }
     
@@ -79,14 +79,14 @@ public class TestGenPriorityQueue {
         stringQueue.insertElement("Bob");
         
         assertEquals(3, stringQueue.size());
-        assertEquals("Alice", stringQueue.element()); // Ordre alphabétique
+        assertEquals("Charlie", stringQueue.element()); // Le plus grand (ordre alphabétique inverse)
         System.out.println("Initial: " + stringQueue.toString());
         
-        assertEquals("Alice", stringQueue.popElement());
-        System.out.println("Après pop Alice: " + stringQueue.toString());
+        assertEquals("Charlie", stringQueue.popElement());
+        System.out.println("Après pop Charlie: " + stringQueue.toString());
         assertEquals("Bob", stringQueue.popElement());
         System.out.println("Après pop Bob: " + stringQueue.toString());
-        assertEquals("Charlie", stringQueue.popElement());
+        assertEquals("Alice", stringQueue.popElement());
         System.out.println("✓ Final: " + stringQueue.toString());
     }
     
@@ -102,7 +102,7 @@ public class TestGenPriorityQueue {
         intQueue.insertElement(5);
         assertEquals(4, intQueue.size());
         assertTrue(intQueue.capacity() > 3);
-        assertEquals(5, intQueue.element()); // Le plus petit après redimensionnement
+        assertEquals(30, intQueue.element()); // Le plus grand après redimensionnement
         System.out.println("✓ Après resize: " + intQueue.toString() + " (cap: " + intQueue.capacity() + ")");
     }
     
@@ -202,12 +202,12 @@ public class TestGenPriorityQueue {
         
         doubleQueue.insertElement(3.14);
         doubleQueue.insertElement(2.71);
-        assertEquals(2.71, doubleQueue.element());
+        assertEquals(3.14, doubleQueue.element());
         System.out.println("Double queue: " + doubleQueue.toString());
         
         charQueue.insertElement('Z');
         charQueue.insertElement('A');
-        assertEquals('A', charQueue.element());
+        assertEquals('Z', charQueue.element());
         System.out.println("Character queue: " + charQueue.toString());
         System.out.println("✓ Types génériques fonctionnent");
     }
@@ -301,7 +301,7 @@ public class TestGenPriorityQueue {
         orderedQueue.insertElement(10);
         orderedQueue.insertElement(15);
         
-        assertEquals(5, orderedQueue.element());
+        assertEquals(15, orderedQueue.element());
         System.out.println("✓ Ordre déjà correct: " + orderedQueue.toString());
     }
     
@@ -317,8 +317,8 @@ public class TestGenPriorityQueue {
         // Test avec deux éléments pour couvrir les branches de heapIfyDown
         intQueue.insertElement(20);
         intQueue.insertElement(10);
-        assertEquals(10, intQueue.popElement());
         assertEquals(20, intQueue.popElement());
+        assertEquals(10, intQueue.popElement());
         System.out.println("✓ Pop de deux éléments: " + intQueue.toString());
     }
     
@@ -333,15 +333,15 @@ public class TestGenPriorityQueue {
         smallQueue.insertElement(10); // Déclenche resize
         smallQueue.insertElement(5);  // Déclenche resize
         
-        assertEquals(5, smallQueue.element());
+        assertEquals(50, smallQueue.element());
         System.out.println("Après multiples redimensionnements: " + smallQueue.toString());
         
         // Vérifier que tous les éléments sont dans le bon ordre
-        assertEquals(5, smallQueue.popElement());
-        assertEquals(10, smallQueue.popElement());
-        assertEquals(20, smallQueue.popElement());
-        assertEquals(30, smallQueue.popElement());
         assertEquals(50, smallQueue.popElement());
+        assertEquals(30, smallQueue.popElement());
+        assertEquals(20, smallQueue.popElement());
+        assertEquals(10, smallQueue.popElement());
+        assertEquals(5, smallQueue.popElement());
         System.out.println("✓ Ordre de priorité maintenu après redimensionnements");
     }
     
@@ -380,7 +380,7 @@ public class TestGenPriorityQueue {
         stringQueue.insertElement("a");
         stringQueue.insertElement("z");
         
-        assertEquals("", stringQueue.element());
+        assertEquals("z", stringQueue.element());
         System.out.println("Chaînes avec chaîne vide: " + stringQueue.toString());
         
         // Test avec des caractères spéciaux
@@ -389,7 +389,7 @@ public class TestGenPriorityQueue {
         charQueue.insertElement('a');
         charQueue.insertElement('0');
         
-        assertEquals('0', charQueue.element());
+        assertEquals('z', charQueue.element());
         System.out.println("Caractères spéciaux: " + charQueue.toString());
     }
     
@@ -421,7 +421,7 @@ public class TestGenPriorityQueue {
         largeQueue.insertElement(60);
         largeQueue.insertElement(50); // Déclenche resize
         
-        assertEquals(50, largeQueue.element());
+        assertEquals(100, largeQueue.element());
         System.out.println("Ordre décroissant: " + largeQueue.toString());
         
         // Insérer dans l'ordre croissant pour tester d'autres branches
@@ -433,7 +433,7 @@ public class TestGenPriorityQueue {
         ascendingQueue.insertElement(50);
         ascendingQueue.insertElement(60); // Déclenche resize
         
-        assertEquals(10, ascendingQueue.element());
+        assertEquals(60, ascendingQueue.element());
         System.out.println("Ordre croissant: " + ascendingQueue.toString());
     }
 }

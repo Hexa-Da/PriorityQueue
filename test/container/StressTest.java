@@ -28,7 +28,7 @@ public class StressTest {
         
         // Test 2: Pop de tous les éléments
         start = System.currentTimeMillis();
-        for (int i = 1; i <= 10000; i++) {
+        for (int i = 10000; i >= 1; i--) {
             Integer popped = queue1.popElement();
             assertEquals(i, popped, "Ordre de priorité incorrect à l'index " + i);
         }
@@ -53,7 +53,7 @@ public class StressTest {
         System.out.println("1000 insertions avec redimensionnements: " + resizeTime + "ms");
         
         assertEquals(1000, queue2.size(), "Taille incorrecte après redimensionnements");
-        assertEquals(1, queue2.element(), "Le plus petit élément devrait être 1");
+        assertEquals(1000, queue2.element(), "Le plus grand élément devrait être 1000");
         
         // Test 4: Éléments égaux (cas problématique)
         System.out.println("\n--- Test 3: Éléments égaux ---");
@@ -68,7 +68,7 @@ public class StressTest {
         System.out.println("1000 éléments égaux: " + equalTime + "ms");
         
         assertEquals(1000, queue3.size(), "Taille incorrecte pour éléments égaux");
-        assertEquals(42, queue3.element(), "Tous les éléments devraient être 42");
+        assertEquals(42, queue3.element(), "Le maximum devrait être 42");
         
         // Test 5: Ordre décroissant (worst case)
         System.out.println("\n--- Test 4: Ordre décroissant (worst case) ---");
@@ -83,7 +83,7 @@ public class StressTest {
         System.out.println("1000 éléments en ordre décroissant: " + worstCaseTime + "ms");
         
         assertEquals(1000, queue4.size(), "Taille incorrecte pour ordre décroissant");
-        assertEquals(1, queue4.element(), "Le plus petit devrait être 1");
+        assertEquals(1000, queue4.element(), "Le plus grand devrait être 1000");
         
         // Test 6: Test avec GenPriorityQueue
         System.out.println("\n--- Test 5: GenPriorityQueue avec entiers ---");
@@ -98,7 +98,7 @@ public class StressTest {
         System.out.println("Insertion 5000 entiers génériques: " + genInsertTime + "ms");
         
         assertEquals(5000, genQueue.size(), "Taille incorrecte pour GenPriorityQueue");
-        assertEquals(1, genQueue.element(), "Le plus petit devrait être 1");
+        assertEquals(5000, genQueue.element(), "Le plus grand devrait être 5000");
         
         // Test 7: Test avec IntFIFO
         System.out.println("\n--- Test 6: IntFIFO ---");
@@ -155,7 +155,7 @@ public class StressTest {
         
         // Pops rapides
         start = System.currentTimeMillis();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 999; i >= 0; i--) {
             Integer popped = queue.popElement();
             assertEquals(i, popped, "Ordre incorrect en concurrence");
         }
@@ -187,7 +187,7 @@ public class StressTest {
             assertEquals(500, queue.size(), "Taille incorrecte au round " + round);
             
             // Pop la moitié
-            for (int i = 0; i < 250; i++) {
+            for (int i = 499; i >= 250; i--) {
                 Integer popped = queue.popElement();
                 assertEquals(i, popped, "Ordre incorrect au round " + round);
             }

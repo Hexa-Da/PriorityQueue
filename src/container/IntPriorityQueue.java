@@ -44,7 +44,7 @@ public class IntPriorityQueue implements Queue<Integer> {
     }
 
     private void resize() {
-        int newCapacity = capacity * 2; // Doubler la capacité pour éviter les redimensionnements fréquents
+        int newCapacity = capacity + 1;
         Integer[] newHeap = new Integer[newCapacity];
         System.arraycopy(heap, 0, newHeap, 0, size);
         heap = newHeap;
@@ -57,7 +57,7 @@ public class IntPriorityQueue implements Queue<Integer> {
             int parentIndex = (index - 1) / 2;
             
             // Si la propriété de tas est respectée, arrêter
-            if (heap[index] >= heap[parentIndex]) {
+            if (heap[index] <= heap[parentIndex]) {
                 break;
             }
             
@@ -79,7 +79,7 @@ public class IntPriorityQueue implements Queue<Integer> {
         if (isEmpty()) {
             throw new NoSuchElementException("La file est vide");
         }
-        return heap[0]; // Le plus petit élément est toujours à la racine
+        return heap[0]; // Le plus grand élément est toujours à la racine
     }
     
     @Override
@@ -88,7 +88,7 @@ public class IntPriorityQueue implements Queue<Integer> {
             throw new NoSuchElementException("La file est vide");
         }
         
-        Integer minElement = heap[0]; // Le plus petit élément
+        Integer maxElement = heap[0]; // Le plus grand élément
         
         if (size == 1) {
             // Si c'est le dernier élément, juste le supprimer
@@ -99,37 +99,37 @@ public class IntPriorityQueue implements Queue<Integer> {
             heap[0] = heap[size - 1]; // Remplacer par le dernier élément
             heap[size - 1] = null; // Libérer la référence
             size--;
-            int index = 0;
-            heapIfyDown(index); // Réorganiser le tas
+            heapIfyDown(); // Réorganiser le tas
         }
         
-        return minElement;
+        return maxElement;
     }
 
     // Méthode pour maintenir la propriété de tas lors de la suppression
-    private void heapIfyDown(int index) {
+    private void heapIfyDown() {
+        int index = 0;
         while (true) {
-            int smallest = index;
+            int biggest = index;
             int leftChild = 2 * index + 1;
             int rightChild = 2 * index + 2;
             
             // Vérifier l'enfant gauche
-            if (leftChild < size && heap[leftChild] < heap[smallest]) {
-                smallest = leftChild;
+            if (leftChild < size && heap[leftChild] > heap[biggest]) {
+                biggest = leftChild;
             }
             
             // Vérifier l'enfant droit
-            if (rightChild < size && heap[rightChild] < heap[smallest]) {
-                smallest = rightChild;
+            if (rightChild < size && heap[rightChild] > heap[biggest]) {
+                biggest = rightChild;
             }
             
             // Si aucun échange n'est nécessaire, arrêter
-            if (smallest == index) {
+            if (biggest == index) {
                 break; // La propriété de tas est respectée !
             }
             
-            swap(index, smallest);
-            index = smallest;
+            swap(index, biggest);
+            index = biggest;
         }
     }
     

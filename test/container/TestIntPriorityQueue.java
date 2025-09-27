@@ -44,7 +44,7 @@ public class TestIntPriorityQueue {
         
         assertEquals(3, queue.size());
         assertFalse(queue.isEmpty());
-        assertEquals(10, queue.element()); // Le plus petit doit être à la racine
+        assertEquals(30, queue.element()); // Le plus grand doit être à la racine
     }
     
     @Test
@@ -54,9 +54,9 @@ public class TestIntPriorityQueue {
         queue.insertElement(10);
         queue.insertElement(20);
         
-        assertEquals(10, queue.popElement()); // Le plus petit en premier
+        assertEquals(30, queue.popElement()); // Le plus grand en premier
         assertEquals(2, queue.size());
-        assertEquals(20, queue.element()); // Le nouveau plus petit
+        assertEquals(20, queue.element()); // Le nouveau plus grand
     }
     
     @Test
@@ -70,15 +70,15 @@ public class TestIntPriorityQueue {
         queue.insertElement(40);
         System.out.println("Initial: " + queue.toString());
         
-        assertEquals(10, queue.popElement());
-        System.out.println("Après pop 10: " + queue.toString());
-        assertEquals(20, queue.popElement());
-        System.out.println("Après pop 20: " + queue.toString());
-        assertEquals(30, queue.popElement());
-        System.out.println("Après pop 30: " + queue.toString());
+        assertEquals(50, queue.popElement());
+        System.out.println("Après pop 50: " + queue.toString());
         assertEquals(40, queue.popElement());
         System.out.println("Après pop 40: " + queue.toString());
-        assertEquals(50, queue.popElement());
+        assertEquals(30, queue.popElement());
+        System.out.println("Après pop 30: " + queue.toString());
+        assertEquals(20, queue.popElement());
+        System.out.println("Après pop 20: " + queue.toString());
+        assertEquals(10, queue.popElement());
         assertTrue(queue.isEmpty());
         System.out.println("✓ Final: " + queue.toString());
     }
@@ -95,7 +95,7 @@ public class TestIntPriorityQueue {
         queue.insertElement(5);
         assertEquals(4, queue.size());
         assertTrue(queue.capacity() > 3);
-        assertEquals(5, queue.element()); // Le plus petit après redimensionnement
+        assertEquals(30, queue.element()); // Le plus grand après redimensionnement
         System.out.println("✓ Après resize: " + queue.toString() + " (cap: " + queue.capacity() + ")");
     }
     
@@ -110,15 +110,15 @@ public class TestIntPriorityQueue {
         queue.insertElement(10);
         System.out.println("Initial: " + queue.toString());
         
-        assertEquals(10, queue.popElement());
-        System.out.println("Après pop 10: " + queue.toString());
-        assertEquals(25, queue.popElement());
-        System.out.println("Après pop 25: " + queue.toString());
-        assertEquals(50, queue.popElement());
-        System.out.println("Après pop 50: " + queue.toString());
+        assertEquals(100, queue.popElement());
+        System.out.println("Après pop 100: " + queue.toString());
         assertEquals(75, queue.popElement());
         System.out.println("Après pop 75: " + queue.toString());
-        assertEquals(100, queue.popElement());
+        assertEquals(50, queue.popElement());
+        System.out.println("Après pop 50: " + queue.toString());
+        assertEquals(25, queue.popElement());
+        System.out.println("Après pop 25: " + queue.toString());
+        assertEquals(10, queue.popElement());
         System.out.println("✓ Final: " + queue.toString());
     }
     
@@ -246,7 +246,7 @@ public class TestIntPriorityQueue {
         orderedQueue.insertElement(10);
         orderedQueue.insertElement(15);
         
-        assertEquals(5, orderedQueue.element());
+        assertEquals(15, orderedQueue.element());
         System.out.println("✓ Ordre déjà correct: " + orderedQueue.toString());
     }
     
@@ -261,15 +261,15 @@ public class TestIntPriorityQueue {
         smallQueue.insertElement(10); // Déclenche resize
         smallQueue.insertElement(5);  // Déclenche resize
         
-        assertEquals(5, smallQueue.element());
+        assertEquals(50, smallQueue.element());
         System.out.println("Après multiples redimensionnements: " + smallQueue.toString());
         
         // Vérifier que tous les éléments sont dans le bon ordre
-        assertEquals(5, smallQueue.popElement());
-        assertEquals(10, smallQueue.popElement());
-        assertEquals(20, smallQueue.popElement());
-        assertEquals(30, smallQueue.popElement());
         assertEquals(50, smallQueue.popElement());
+        assertEquals(30, smallQueue.popElement());
+        assertEquals(20, smallQueue.popElement());
+        assertEquals(10, smallQueue.popElement());
+        assertEquals(5, smallQueue.popElement());
         System.out.println("✓ Ordre de priorité maintenu après redimensionnements");
     }
     
@@ -282,7 +282,7 @@ public class TestIntPriorityQueue {
         queue.insertElement(0);
         
         assertEquals(3, queue.size());
-        assertEquals(Integer.MIN_VALUE, queue.element());
+        assertEquals(Integer.MAX_VALUE, queue.element());
         System.out.println("✓ Valeurs limites: " + queue.toString());
         
         // Test avec des valeurs négatives
@@ -291,7 +291,7 @@ public class TestIntPriorityQueue {
         negativeQueue.insertElement(-5);
         negativeQueue.insertElement(-1);
         
-        assertEquals(-10, negativeQueue.element());
+        assertEquals(-1, negativeQueue.element());
         System.out.println("✓ Valeurs négatives: " + negativeQueue.toString());
     }
 }

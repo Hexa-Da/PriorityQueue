@@ -3,21 +3,13 @@
 Ce projet implémente **3 types de files** (queues) en Java, toutes conformes à l'interface `Queue<E>` :
 
 1. **IntFIFO** : File FIFO non-générique (First In, First Out)
-2. **IntPriorityQueue** : File de priorité non-générique (tas binaire min-heap)
-3. **GenPriorityQueue** : File de priorité générique (tas binaire min-heap)
+2. **IntPriorityQueue** : File de priorité non-générique (tas binaire max-heap)
+3. **GenPriorityQueue** : File de priorité générique (tas binaire max-heap)
 
 ## Fonctionnalités et Optimisations
-
-### **Performance Optimisée**
-- **Redimensionnement intelligent** : Capacité doublée (×2) au lieu d'incrémentation (+1)
-- **Algorithmes sécurisés** : Protection contre les boucles infinies
 - **Tests de stress** : Validation avec 10 000+ éléments
 - **Timeouts optimisés** : Tests rapides et fiables
-
-### **Robustesse Maximale**
-- **Vérifications de sécurité** : Contrôles de limites et valeurs null
 - **Gestion d'erreurs** : Exceptions appropriées (NoSuchElementException, IllegalArgumentException)
-- **Itérateurs sécurisés** : Parcours sans risque de modification concurrente
 - **Cas limites couverts** : Éléments égaux, ordres décroissants, capacités extrêmes
 
 ## 1. Interface Queue<E> - Le contrat commun
@@ -69,10 +61,10 @@ private void resize() {
 ## 3. IntPriorityQueue - File de priorité (Tas binaire)
 
 ### **Principe de fonctionnement :**
-- **Priorité** : L'élément le plus petit est toujours en premier
-- **Structure** : Tas binaire (heap) avec propriété min-heap
-- **Redimensionnement** : Double la capacité quand nécessaire (optimisé)
-- **Sécurité** : Protection contre les boucles infinies
+- **Priorité** : L'élément le plus grand est toujours en premier
+- **Structure** : Tas binaire (heap) avec propriété max-heap
+- **Redimensionnement** : Augmentation de la capacité quand nécessaire
+
 
 ### **Algorithme clé optimisé :**
 ```java
@@ -81,13 +73,8 @@ private void heapifyUp(int index) {
     while (index > 0) {
         int parentIndex = (index - 1) / 2;
         
-        // Vérifier que les éléments ne sont pas null avant comparaison
-        if (heap[index] == null || heap[parentIndex] == null) {
-            break;
-        }
-        
         // Si la propriété de tas est respectée, arrêter
-        if (heap[index] >= heap[parentIndex]) {
+        if (heap[index] <= heap[parentIndex]) {
             break;
         }
         
@@ -97,31 +84,30 @@ private void heapifyUp(int index) {
 }
 
 // Suppression - heapifyDown simplifié et efficace
-private void heapifyDown(int index) {
+private void heapifyDown() {
+    int index = 0;
     while (true) {
-        int smallest = index;
+        int biggest = index;
         int leftChild = 2 * index + 1;
         int rightChild = 2 * index + 2;
         
         // Vérifier l'enfant gauche
-        if (leftChild < size && heap[leftChild] != null && heap[smallest] != null 
-            && heap[leftChild] < heap[smallest]) {
-            smallest = leftChild;
+        if (leftChild < size && heap[leftChild] > heap[biggest]) {
+            biggest = leftChild;
         }
         
         // Vérifier l'enfant droit
-        if (rightChild < size && heap[rightChild] != null && heap[smallest] != null 
-            && heap[rightChild] < heap[smallest]) {
-            smallest = rightChild;
+        if (rightChild < size && heap[rightChild] > heap[biggest]) {
+            biggest = rightChild;
         }
         
         // Si aucun échange n'est nécessaire, arrêter
-        if (smallest == index) {
+        if (biggest == index) {
             break; // La propriété de tas est respectée !
         }
         
-        swap(index, smallest);
-        index = smallest;
+        swap(index, biggest);
+        index = biggest;
     }
 }
 ```
@@ -129,17 +115,14 @@ private void heapifyDown(int index) {
 ### **Avantages :**
 - Insertion en O(log n)
 - Suppression en O(log n)
-- Consultation du minimum en O(1)
-- Algorithmes simplifiés et efficaces
-- Gestion robuste des cas limites
+- Consultation du maximum en O(1)
 
 ## 4. GenPriorityQueue - File générique (Tas binaire)
 
 ### **Principe de fonctionnement :**
 - **Généricité** : `<E extends Comparable<E>>` pour tout type comparable
 - **Type erasure** : Utilise `Object[]` avec casting sécurisé
-- **Même algorithme sécurisé** que IntPriorityQueue mais générique
-- **Sécurité** : Protection contre les boucles infinies et valeurs null
+- **Même algorithme** que IntPriorityQueue mais générique
 
 ### **Gestion des types optimisée :**
 ```java
@@ -151,18 +134,13 @@ public class GenPriorityQueue<E extends Comparable<E>> {
     private void heapifyUp(int index) {
         while (index > 0) {
             int parentIndex = (index - 1) / 2;
-            
-            // Vérifier que les éléments ne sont pas null avant comparaison
-            if (heap[index] == null || heap[parentIndex] == null) {
-                break;
-            }
-            
+       
             // Caster et comparer les éléments
             E current = (E) heap[index];
             E parent = (E) heap[parentIndex];
             
             // Si la propriété de tas est respectée, arrêter
-            if (current.compareTo(parent) >= 0) {
+            if (current.compareTo(parent) <= 0) {
                 break;
             }
             
@@ -172,37 +150,38 @@ public class GenPriorityQueue<E extends Comparable<E>> {
     }
     
     // HeapifyDown générique optimisé
-    private void heapifyDown(int index) {
+    private void heapifyDown() {
+        int index = 0;
         while (true) {
-            int smallest = index;
+            int biggest = index;
             int leftChild = 2 * index + 1;
             int rightChild = 2 * index + 2;
             
             // Vérifier l'enfant gauche
-            if (leftChild < size && heap[leftChild] != null && heap[smallest] != null) {
+            if (leftChild < size) {
                 E left = (E) heap[leftChild];
-                E current = (E) heap[smallest];
-                if (left.compareTo(current) < 0) {
-                    smallest = leftChild;
+                E current = (E) heap[biggest];
+                if (left.compareTo(current) > 0) {
+                    biggest = leftChild;
                 }
             }
             
             // Vérifier l'enfant droit
-            if (rightChild < size && heap[rightChild] != null && heap[smallest] != null) {
+            if (rightChild < size) {
                 E right = (E) heap[rightChild];
-                E current = (E) heap[smallest];
-                if (right.compareTo(current) < 0) {
-                    smallest = rightChild;
+                E current = (E) heap[biggest];
+                if (right.compareTo(current) > 0) {
+                    biggest = rightChild;
                 }
             }
             
             // Si aucun échange n'est nécessaire, arrêter
-            if (smallest == index) {
+            if (biggest == index) {
                 break; // La propriété de tas est respectée !
             }
             
-            swap(index, smallest);
-            index = smallest;
+            swap(index, biggest);
+            index = biggest;
         }
     }
 }
@@ -273,7 +252,6 @@ test/container/
 ```
 src/container/     # Code source principal
 test/container/    # Tests unitaires
-target/           # Fichiers compilés (générés)
 ```
 
 ## Utilisation

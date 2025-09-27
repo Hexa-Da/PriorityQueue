@@ -43,7 +43,7 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
     }
     
     private void resize() {
-        int newCapacity = capacity * 2; // Doubler la capacité pour éviter les redimensionnements fréquents
+        int newCapacity = capacity +1 ;
         Object[] newHeap = new Object[newCapacity];
         System.arraycopy(heap, 0, newHeap, 0, size);
         heap = newHeap;
@@ -59,7 +59,7 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
             E parent = (E) heap[parentIndex];
             
             // Si la propriété de tas est respectée, arrêter
-            if (current.compareTo(parent) >= 0) {
+            if (current.compareTo(parent) <= 0) {
                 break;
             }
             
@@ -88,7 +88,7 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
             throw new NoSuchElementException("La file est vide");
         }
         
-        E minElement = (E) heap[0]; 
+        E maxElement = (E) heap[0];
         
         if (size == 1) {
             heap[0] = null;
@@ -97,46 +97,46 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
             heap[0] = heap[size - 1]; 
             heap[size - 1] = null;
             size--;
-            int index = 0;
-            heapIfyDown(index);
+            heapIfyDown();
         }
         
-        return minElement;
+        return maxElement;
     }
 
-    private void heapIfyDown(int index) {
+    private void heapIfyDown() {
+        int index = 0;
         while (true) {
-            int smallest = index;
+            int biggest = index;
             int leftChild = 2 * index + 1;
             int rightChild = 2 * index + 2;
             
             // Vérifier l'enfant gauche
             if (leftChild < size) {
                 E left = (E) heap[leftChild];
-                E current = (E) heap[smallest];
+                E current = (E) heap[biggest];
                 // On compare les éléments avec compareTo
-                if (left.compareTo(current) < 0) {
-                    smallest = leftChild;
+                if (left.compareTo(current) > 0) {
+                    biggest = leftChild;
                 }
             }
             
             // Vérifier l'enfant droit
             if (rightChild < size) {
                 E right = (E) heap[rightChild];
-                E current = (E) heap[smallest];
+                E current = (E) heap[biggest];
                 // On compare les éléments avec compareTo
-                if (right.compareTo(current) < 0) {
-                    smallest = rightChild;
+                if (right.compareTo(current) > 0) {
+                    biggest = rightChild;
                 }
             }
             
             // Si aucun échange n'est nécessaire, arrêter
-            if (smallest == index) {
+            if (biggest == index) {
                 break; // La propriété de tas est respectée !
             }
             
-            swap(index, smallest);
-            index = smallest;
+            swap(index, biggest);
+            index = biggest;
         }
     }
     
