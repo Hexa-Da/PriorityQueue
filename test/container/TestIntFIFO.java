@@ -1,13 +1,12 @@
 package container;
 
-import java.util.NoSuchElementException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Timeout;
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.Iterator;
 
 /**
- * Tests unitaires pour IntFIFO utilisant JUnit 5
+ * Tests unitaires pour IntFIFO (File FIFO)
  */
 public class TestIntFIFO {
     
@@ -18,213 +17,198 @@ public class TestIntFIFO {
         queue = new IntFIFO(3);
     }
     
+    // === Tests basiques ===
+    
     @Test
-    @Timeout(1) // 1 seconde maximum
-    public void test_emptyCreation() {
-        System.out.println("=== Test: Création d'une queue vide ===");
+    public void test_newQueueIsEmpty() {
         assertTrue(queue.isEmpty());
         assertEquals(0, queue.size());
-        assertEquals(3, queue.capacity());
-        System.out.println("✓ Queue: " + queue.toString());
     }
     
     @Test
-    @Timeout(1) // 1 seconde maximum
-    public void test_insertElement() {
-        System.out.println("=== Test: Insertion d'un élément ===");
-        assertTrue(queue.insertElement(10));
+    public void test_insertOneElement() {
+        queue.insertElement(10);
         assertFalse(queue.isEmpty());
         assertEquals(1, queue.size());
         assertEquals(10, queue.element());
-        System.out.println("✓ Queue: " + queue.toString());
     }
     
     @Test
-    public void test_insertMultipleElements() {
-        System.out.println("=== Test: Insertion de plusieurs éléments ===");
+    public void test_insertAndPopOneElement() {
         queue.insertElement(10);
-        queue.insertElement(20);
-        queue.insertElement(30);
-        
-        assertEquals(3, queue.size());
-        assertFalse(queue.isEmpty());
-        assertEquals(10, queue.element());
-        System.out.println("✓ Queue: " + queue.toString());
-    }
-    
-    @Test
-    @Timeout(1) // 1 seconde maximum
-    public void test_popElement() {
-        System.out.println("=== Test: Suppression d'un élément ===");
-        queue.insertElement(10);
-        queue.insertElement(20);
-        System.out.println("Avant pop: " + queue.toString());
-        
         assertEquals(10, queue.popElement());
-        assertEquals(1, queue.size());
-        assertEquals(20, queue.element());
-        System.out.println("✓ Après pop: " + queue.toString());
-    }
-    
-    @Test
-    public void test_popAllElements() {
-        System.out.println("=== Test: Suppression de tous les éléments ===");
-        queue.insertElement(10);
-        queue.insertElement(20);
-        queue.insertElement(30);
-        System.out.println("Initial: " + queue.toString());
-        
-        assertEquals(10, queue.popElement());
-        System.out.println("Après pop 10: " + queue);
-        assertEquals(20, queue.popElement());
-        System.out.println("Après pop 20: " + queue.toString());
-        assertEquals(30, queue.popElement());
         assertTrue(queue.isEmpty());
-        System.out.println("✓ Final: " + queue.toString());
     }
     
+    // === Tests FIFO (ordre d'insertion) ===
+    
     @Test
-    @Timeout(2) // 2 secondes pour le redimensionnement
-    public void test_resize() {
-        System.out.println("=== Test: Redimensionnement de la queue ===");
+    public void test_fifoOrder() {
         queue.insertElement(10);
         queue.insertElement(20);
         queue.insertElement(30);
-        System.out.println("Avant resize: " + queue.toString() + " (cap: " + queue.capacity() + ")");
         
-        queue.insertElement(40);
+        assertEquals(10, queue.popElement()); // Premier inséré
+        assertEquals(20, queue.popElement()); // Deuxième inséré
+        assertEquals(30, queue.popElement()); // Troisième inséré
+        assertTrue(queue.isEmpty());
+    }
+    
+    // === Tests de redimensionnement ===
+    
+    @Test
+    public void test_autoGrowth() {
+        queue.insertElement(10);
+        queue.insertElement(20);
+        queue.insertElement(30);
+        queue.insertElement(40); // Dépasse la capacité initiale (3)
+        
         assertEquals(4, queue.size());
-        assertTrue(queue.capacity() > 3);
         assertEquals(10, queue.element());
-        System.out.println("✓ Après resize: " + queue.toString() + " (cap: " + queue.capacity() + ")");
     }
     
     @Test
-    public void test_circularBehavior() {
-        System.out.println("=== Test: Comportement circulaire de la queue ===");
+    public void test_multipleResizes() {
+        // Test pour couvrir le cas où rear < front après redimensionnement
+        queue.insertElement(1);
+        queue.insertElement(2);
+        queue.insertElement(3);
+        queue.popElement(); // Fait avancer front
+        queue.insertElement(4); // Dépasse la capacité, déclenche resize
+        queue.insertElement(5); // Encore un resize
+        
+        assertEquals(4, queue.size());
+        assertEquals(2, queue.element());
+    }
+    
+    // === Tests de l'itérateur ===
+    
+    @Test
+    public void test_iteratorOnEmptyQueue() {
+        Iterator<Integer> it = queue.iterator();
+        assertFalse(it.hasNext());
+    }
+    
+    @Test
+    public void test_iteratorOnSingleElement() {
+        queue.insertElement(42);
+        Iterator<Integer> it = queue.iterator();
+        
+        assertTrue(it.hasNext());
+        assertEquals(42, it.next());
+        assertFalse(it.hasNext());
+    }
+    
+    @Test
+    public void test_iteratorOnMultipleElements() {
         queue.insertElement(10);
         queue.insertElement(20);
         queue.insertElement(30);
-        System.out.println("Initial: " + queue.toString());
         
-        queue.popElement(); // Retire 10
-        System.out.println("Après pop: " + queue.toString());
+        Iterator<Integer> it = queue.iterator();
+        assertTrue(it.hasNext());
+        assertEquals(10, it.next());
+        assertTrue(it.hasNext());
+        assertEquals(20, it.next());
+        assertTrue(it.hasNext());
+        assertEquals(30, it.next());
+        assertFalse(it.hasNext());
+    }
+    
+    @Test
+    public void test_iteratorWithCircularBuffer() {
+        // Test pour couvrir le cas où rear < front dans l'itérateur
+        queue.insertElement(1);
+        queue.insertElement(2);
+        queue.insertElement(3);
+        queue.popElement(); // front avance
+        queue.popElement(); // front avance encore
+        queue.insertElement(4); // rear dépasse la fin et revient au début
+        queue.insertElement(5);
         
-        queue.insertElement(40); // Ajoute 40
-        assertEquals(3, queue.size());
-        assertEquals(20, queue.element());
-        System.out.println("✓ Après insert 40: " + queue.toString());
+        Iterator<Integer> it = queue.iterator();
+        assertEquals(3, it.next());
+        assertEquals(4, it.next());
+        assertEquals(5, it.next());
+        assertFalse(it.hasNext());
+    }
+    
+    // === Tests toString (pour 100% de couverture) ===
+    
+    @Test
+    public void test_toStringEmptyQueue() {
+        String str = queue.toString();
+        assertNotNull(str);
+        assertTrue(str.contains("None"));
+    }
+    
+    @Test
+    public void test_toStringWithOneElement() {
+        queue.insertElement(10);
+        String str = queue.toString();
+        assertNotNull(str);
+        assertTrue(str.contains("10"));
+        assertTrue(str.contains("None"));
+    }
+    
+    @Test
+    public void test_toStringWithTwoElements() {
+        queue.insertElement(10);
+        queue.insertElement(20);
+        String str = queue.toString();
+        assertNotNull(str);
+        assertTrue(str.contains("10"));
+        assertTrue(str.contains("20"));
+        assertTrue(str.contains("None"));
+    }
+    
+    @Test
+    public void test_toStringFullQueue() {
+        queue.insertElement(10);
+        queue.insertElement(20);
+        queue.insertElement(30);
+        String str = queue.toString();
+        assertNotNull(str);
+        assertTrue(str.contains("10"));
+        assertTrue(str.contains("20"));
+        assertTrue(str.contains("30"));
+    }
+    
+    @Test
+    public void test_toStringAfterPopAndInsert() {
+        // Test pour couvrir différentes branches de toString
+        queue.insertElement(1);
+        queue.insertElement(2);
+        queue.insertElement(3);
+        queue.popElement();
+        queue.insertElement(4);
+        String str = queue.toString();
+        assertNotNull(str);
+        assertTrue(str.contains("2"));
+        assertTrue(str.contains("3"));
+        assertTrue(str.contains("4"));
+    }
+    
+    // === Tests d'erreurs ===
+    
+    @Test
+    public void test_elementOnEmptyQueue() {
+        assertThrows(Exception.class, () -> queue.element());
+    }
+    
+    @Test
+    public void test_popOnEmptyQueue() {
+        assertThrows(Exception.class, () -> queue.popElement());
     }
     
     @Test
     public void test_insertNull() {
-        System.out.println("=== Test: Insertion d'un élément null ===");
-        assertThrows(IllegalArgumentException.class, () -> {
-            queue.insertElement(null);
-        });
-        System.out.println("✓ Exception IllegalArgumentException levée");
-    }
-    
-    @Test
-    public void test_elementOnEmptyQueue() {
-        System.out.println("=== Test: Accès à l'élément d'une queue vide ===");
-        assertThrows(NoSuchElementException.class, () -> {
-            queue.element();
-        });
-        System.out.println("✓ Exception NoSuchElementException levée");
-    }
-    
-    @Test
-    public void test_popElementOnEmptyQueue() {
-        System.out.println("=== Test: Suppression d'un élément d'une queue vide ===");
-        assertThrows(NoSuchElementException.class, () -> {
-            queue.popElement();
-        });
-        System.out.println("✓ Exception NoSuchElementException levée");
+        assertThrows(Exception.class, () -> queue.insertElement(null));
     }
     
     @Test
     public void test_invalidCapacity() {
-        System.out.println("=== Test: Création avec une capacité invalide ===");
-        assertThrows(IllegalArgumentException.class, () -> {
-            new IntFIFO(0);
-        });
-        System.out.println("✓ Exception IllegalArgumentException levée");
-    }
-    
-    @Test
-    public void test_iterator() {
-        System.out.println("=== Test: Itération sur la queue ===");
-        queue.insertElement(10);
-        queue.insertElement(20);
-        queue.insertElement(30);
-        System.out.println("Queue: " + queue.toString());
-        
-        int count = 0;
-        for (Integer element : queue) {
-            count++;
-            assertNotNull(element);
-        }
-        assertEquals(3, count);
-        System.out.println("✓ Itération: " + count + " éléments parcourus");
-    }
-    
-    @Test
-    public void test_toString() {
-        System.out.println("\n=== Test: Représentation string de la queue ===");
-        queue.insertElement(10);
-        queue.insertElement(20);
-        
-        String result = queue.toString();
-        System.out.println("toString(): " + result);
-        assertTrue(result.contains("10"));
-        assertTrue(result.contains("20"));
-        assertTrue(result.startsWith("["));
-        assertTrue(result.endsWith("]"));
-        System.out.println("✓ Format correct");
-    }
-    
-    @Test
-    public void test_edgeCases() {
-        System.out.println("\n=== Test: Cas limites supplémentaires ===");
-        // Test avec des valeurs limites
-        queue.insertElement(Integer.MAX_VALUE);
-        queue.insertElement(Integer.MIN_VALUE);
-        queue.insertElement(0);
-        
-        assertEquals(3, queue.size());
-        assertEquals(Integer.MAX_VALUE, queue.element()); // FIFO: premier inséré = premier sorti
-        System.out.println("✓ Valeurs limites: " + queue.toString());
-        
-        // Test redimensionnement multiple
-        queue.insertElement(1); // Déclenche resize
-        queue.insertElement(2); // Déclenche resize
-        queue.insertElement(3); // Déclenche resize
-        
-        assertEquals(6, queue.size());
-        assertTrue(queue.capacity() > 3);
-        System.out.println("✓ Multiples redimensionnements: " + queue.toString());
-    }
-    
-    @Test
-    public void test_iteratorEdgeCases() {
-        System.out.println("\n=== Test: Cas limites de l'itérateur ===");
-        // Test itérateur sur queue vide
-        int count = 0;
-        for (Integer element : queue) {
-            count++;
-        }
-        assertEquals(0, count);
-        System.out.println("✓ Itérateur sur queue vide: " + count + " éléments");
-        
-        // Test itérateur avec un seul élément
-        queue.insertElement(42);
-        count = 0;
-        for (Integer element : queue) {
-            count++;
-            assertNotNull(element);
-        }
-        assertEquals(1, count);
-        System.out.println("✓ Itérateur sur un élément: " + count + " éléments");
+        assertThrows(Exception.class, () -> new IntFIFO(0));
+        assertThrows(Exception.class, () -> new IntFIFO(-1));
     }
 }

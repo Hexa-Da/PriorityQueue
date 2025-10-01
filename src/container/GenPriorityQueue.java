@@ -10,7 +10,7 @@ import java.util.NoSuchElementException;
 @SuppressWarnings("unchecked") // Pour éviter les warnings de type erasure
 public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
     
-    private Object[] heap; // Tableau d'Object pour éviter les problèmes de type erasure
+    private E[] heap; // Tableau typé E[] au lieu d'Object[]
     private int size;
     private int capacity;
     
@@ -20,7 +20,7 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
         }
         this.capacity = capacity;
         this.size = 0;
-        this.heap = new Object[capacity];
+        this.heap = (E[]) new Comparable[capacity]; // Cast une seule fois ici
     }
     
     public boolean insertElement(E element) {
@@ -37,26 +37,26 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
         size++;
         
         // Réorganiser le tas pour maintenir la propriété
-        heapIfyUp(size - 1);
+        heapifyUp(size - 1);
         
         return true;
     }
     
     private void resize() {
-        int newCapacity = capacity +1 ;
-        Object[] newHeap = new Object[newCapacity];
+        int newCapacity = capacity + 1;
+        E[] newHeap = (E[]) new Comparable[newCapacity];
         System.arraycopy(heap, 0, newHeap, 0, size);
         heap = newHeap;
         capacity = newCapacity;
     }
 
-    private void heapIfyUp(int index) {
+    private void heapifyUp(int index) {
         while (index > 0) {
             int parentIndex = (index - 1) / 2;
             
-            // Caster et comparer les éléments
-            E current = (E) heap[index];
-            E parent = (E) heap[parentIndex];
+            // pas besoin de cast
+            E current = heap[index];
+            E parent = heap[parentIndex];
             
             // Si la propriété de tas est respectée, arrêter
             if (current.compareTo(parent) <= 0) {
@@ -69,7 +69,7 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
     }
 
     private void swap(int i, int j) {
-        E temp = (E) heap[i];
+        E temp = heap[i]; 
         heap[i] = heap[j];
         heap[j] = temp;
     }
@@ -79,7 +79,7 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
         if (isEmpty()) {
             throw new NoSuchElementException("La file est vide");
         }
-        return (E) heap[0]; // Cast vers E
+        return heap[0]; 
     }
     
     @Override
@@ -88,7 +88,7 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
             throw new NoSuchElementException("La file est vide");
         }
         
-        E maxElement = (E) heap[0];
+        E maxElement = heap[0]; 
         
         if (size == 1) {
             heap[0] = null;
@@ -97,13 +97,13 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
             heap[0] = heap[size - 1]; 
             heap[size - 1] = null;
             size--;
-            heapIfyDown();
+            heapifyDown();
         }
         
         return maxElement;
     }
 
-    private void heapIfyDown() {
+    private void heapifyDown() {
         int index = 0;
         while (true) {
             int biggest = index;
@@ -112,20 +112,20 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
             
             // Vérifier l'enfant gauche
             if (leftChild < size) {
-                E left = (E) heap[leftChild];
-                E current = (E) heap[biggest];
+                E left = heap[leftChild];
+                E currentBiggest = heap[biggest];
                 // On compare les éléments avec compareTo
-                if (left.compareTo(current) > 0) {
+                if (left.compareTo(currentBiggest) > 0) {
                     biggest = leftChild;
                 }
             }
             
             // Vérifier l'enfant droit
             if (rightChild < size) {
-                E right = (E) heap[rightChild];
-                E current = (E) heap[biggest];
+                E right = heap[rightChild];
+                E currentBiggest = heap[biggest];
                 // On compare les éléments avec compareTo
-                if (right.compareTo(current) > 0) {
+                if (right.compareTo(currentBiggest) > 0) {
                     biggest = rightChild;
                 }
             }
@@ -177,7 +177,7 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
                 throw new NoSuchElementException("Aucun élément suivant");
             }
             
-            E element = (E) heap[currentIndex]; // Cast vers E
+            E element = heap[currentIndex]; 
             currentIndex++;
             return element;
         }

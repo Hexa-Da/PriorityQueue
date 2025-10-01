@@ -38,7 +38,7 @@ public class IntPriorityQueue implements Queue<Integer> {
         size++;
         
         // Réorganiser le tas pour maintenir la propriété de tas
-        heapIfyUp(size - 1);
+        heapifyUp(size - 1);
         
         return true;
     }
@@ -52,12 +52,12 @@ public class IntPriorityQueue implements Queue<Integer> {
     }
     
     // Méthode pour maintenir la propriété de tas lors de l'ajout
-    private void heapIfyUp(int index) {
+    private void heapifyUp(int index) {
         while (index > 0) {
             int parentIndex = (index - 1) / 2;
             
             // Si la propriété de tas est respectée, arrêter
-            if (heap[index] <= heap[parentIndex]) {
+            if (heap[index].compareTo(heap[parentIndex]) <= 0) {
                 break;
             }
             
@@ -99,14 +99,14 @@ public class IntPriorityQueue implements Queue<Integer> {
             heap[0] = heap[size - 1]; // Remplacer par le dernier élément
             heap[size - 1] = null; // Libérer la référence
             size--;
-            heapIfyDown(); // Réorganiser le tas
+            heapifyDown(); // Réorganiser le tas
         }
         
         return maxElement;
     }
 
     // Méthode pour maintenir la propriété de tas lors de la suppression
-    private void heapIfyDown() {
+    private void heapifyDown() {
         int index = 0;
         while (true) {
             int biggest = index;
@@ -114,12 +114,12 @@ public class IntPriorityQueue implements Queue<Integer> {
             int rightChild = 2 * index + 2;
             
             // Vérifier l'enfant gauche
-            if (leftChild < size && heap[leftChild] > heap[biggest]) {
+            if (leftChild < size && heap[leftChild].compareTo(heap[biggest]) > 0) {
                 biggest = leftChild;
             }
             
-            // Vérifier l'enfant droit
-            if (rightChild < size && heap[rightChild] > heap[biggest]) {
+            // idem à droite
+            if (rightChild < size && heap[rightChild].compareTo(heap[biggest]) > 0) {
                 biggest = rightChild;
             }
             
