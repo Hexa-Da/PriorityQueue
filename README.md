@@ -1,16 +1,10 @@
-# TD Software Engineering - Implémentation de Files (Queues)
+# Implémentation de Files (Queues)
 
 Ce projet implémente **3 types de files** (queues) en Java, toutes conformes à l'interface `Queue<E>` :
 
 1. **IntFIFO** : File FIFO non-générique (First In, First Out)
 2. **IntPriorityQueue** : File de priorité non-générique (tas binaire max-heap)
 3. **GenPriorityQueue** : File de priorité générique (tas binaire max-heap)
-
-## Fonctionnalités et Optimisations
-- **Tests de stress** : Validation avec 10 000+ éléments
-- **Timeouts optimisés** : Tests rapides et fiables
-- **Gestion d'erreurs** : Exceptions appropriées (NoSuchElementException, IllegalArgumentException)
-- **Cas limites couverts** : Éléments égaux, ordres décroissants, capacités extrêmes
 
 ## 1. Interface Queue<E> - Le contrat commun
 
@@ -68,7 +62,7 @@ private void resize() {
 
 ### **Algorithme clé optimisé :**
 ```java
-// Insertion - heapifyUp simplifié et efficace
+// Insertion 
 private void heapifyUp(int index) {
     while (index > 0) {
         int parentIndex = (index - 1) / 2;
@@ -83,7 +77,7 @@ private void heapifyUp(int index) {
     }
 }
 
-// Suppression - heapifyDown simplifié et efficace
+// Suppression 
 private void heapifyDown() {
     int index = 0;
     while (true) {
@@ -121,23 +115,21 @@ private void heapifyDown() {
 
 ### **Principe de fonctionnement :**
 - **Généricité** : `<E extends Comparable<E>>` pour tout type comparable
-- **Type erasure** : Utilise `Object[]` avec casting sécurisé
+- **Type erasure** : Utilise `E[]` avec casting sécurisé
 - **Même algorithme** que IntPriorityQueue mais générique
 
 ### **Gestion des types optimisée :**
 ```java
-@SuppressWarnings("unchecked")
 public class GenPriorityQueue<E extends Comparable<E>> {
-    private Object[] heap; // Tableau d'Object pour éviter les problèmes de type erasure
+    private E[] heap; 
     
-    // HeapifyUp générique optimisé
+    // HeapifyUp générique 
     private void heapifyUp(int index) {
         while (index > 0) {
             int parentIndex = (index - 1) / 2;
        
-            // Caster et comparer les éléments
-            E current = (E) heap[index];
-            E parent = (E) heap[parentIndex];
+            E current = heap[index];
+            E parent = heap[parentIndex];
             
             // Si la propriété de tas est respectée, arrêter
             if (current.compareTo(parent) <= 0) {
@@ -149,7 +141,7 @@ public class GenPriorityQueue<E extends Comparable<E>> {
         }
     }
     
-    // HeapifyDown générique optimisé
+    // HeapifyDown générique 
     private void heapifyDown() {
         int index = 0;
         while (true) {
@@ -159,18 +151,18 @@ public class GenPriorityQueue<E extends Comparable<E>> {
             
             // Vérifier l'enfant gauche
             if (leftChild < size) {
-                E left = (E) heap[leftChild];
-                E current = (E) heap[biggest];
-                if (left.compareTo(current) > 0) {
+                E left = heap[leftChild];
+                E currentBiggest = heap[biggest];
+                if (left.compareTo(currentBiggest) > 0) {
                     biggest = leftChild;
                 }
             }
             
             // Vérifier l'enfant droit
             if (rightChild < size) {
-                E right = (E) heap[rightChild];
-                E current = (E) heap[biggest];
-                if (right.compareTo(current) > 0) {
+                E right = heap[rightChild];
+                E currentBiggest = heap[biggest];
+                if (right.compareTo(currentBiggest) > 0) {
                     biggest = rightChild;
                 }
             }
@@ -187,33 +179,14 @@ public class GenPriorityQueue<E extends Comparable<E>> {
 }
 ```
 
-### **Exemples d'utilisation :**
-```java
-// Files typées
-GenPriorityQueue<Integer> intQueue = new GenPriorityQueue<>(10);
-GenPriorityQueue<String> stringQueue = new GenPriorityQueue<>(10);
-GenPriorityQueue<Double> doubleQueue = new GenPriorityQueue<>(10);
-
-// Utilisation
-intQueue.insertElement(42);
-stringQueue.insertElement("Hello");
-doubleQueue.insertElement(3.14);
-
-// Parcours avec itérateur
-for (Integer value : intQueue) {
-    System.out.println(value);
-}
-```
-
 ## 5. Tests unitaires JUnit 5
 
 ### **Structure des tests :**
 ```
 test/container/
-├── TestIntFIFO.java          (15 tests)
-├── TestIntPriorityQueue.java (18 tests)
-├── TestGenPriorityQueue.java (24 tests)
-└── StressTest.java           (3 tests de performance)
+├── TestIntFIFO.java          (19 tests)
+├── TestIntPriorityQueue.java (21 tests)
+└── TestGenPriorityQueue.java (20 tests)
 ```
 
 ### **Couverture des tests :**
@@ -270,33 +243,3 @@ mvn test -Dtest=TestIntFIFO             # Tests IntFIFO
 # Tests avec rapport de couverture
 mvn test jacoco:report
 ```
-
-### **Résultats de performance :**
-```
-=== Tests de stress ===
---- Test 1: 10000 éléments ---
-Insertion de 10000 éléments: 23ms
-Suppression de 10000 éléments: 42ms
-
---- Test 2: Redimensionnements fréquents ---
-1000 insertions avec redimensionnements: 1ms
-
---- Test 3: Éléments égaux ---
-1000 éléments égaux: 0ms
-
---- Test 4: Ordre décroissant (worst case) ---
-1000 éléments en ordre décroissant: 1ms
-
---- Test 5: GenPriorityQueue avec entiers ---
-Insertion 5000 entiers génériques: 16ms
-
---- Test 6: IntFIFO ---
-```
-
-### **Statistiques finales :**
-- **Total** : 60 tests
-- **Succès** : 60  
-- **Échecs** : 0 
-- **Erreurs** : 0 
-- **Temps d'exécution** : ~20 secondes
-- **Couverture de code** : Optimale avec tests de stress

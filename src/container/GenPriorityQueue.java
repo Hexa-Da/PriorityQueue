@@ -8,6 +8,7 @@ import java.util.NoSuchElementException;
  * Les éléments doivent implémenter l'interface Comparable<E>
  */
 @SuppressWarnings("unchecked") // Pour éviter les warnings de type erasure
+// Utilise un paramètre de type E qui doit être Comparable avec lui-même (E extends Comparable<E>)
 public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
     
     private E[] heap; // Tableau typé E[] au lieu d'Object[]
