@@ -184,7 +184,7 @@ public class GenPriorityQueue<E extends Comparable<E>> {
 ### **Structure des tests :**
 ```
 test/container/
-├── TestIntFIFO.java          (19 tests)
+├── TestIntFIFO.java          (21 tests)
 ├── TestIntPriorityQueue.java (21 tests)
 └── TestGenPriorityQueue.java (20 tests)
 ```

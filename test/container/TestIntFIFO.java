@@ -211,4 +211,31 @@ public class TestIntFIFO {
         assertThrows(Exception.class, () -> new IntFIFO(0));
         assertThrows(Exception.class, () -> new IntFIFO(-1));
     }
+
+    @Test
+    public void test_iterator_Exception() {
+        // Cas 1: itérateur sur file vide -> next() doit lever NoSuchElementException
+        Iterator<Integer> itEmpty = queue.iterator();
+        assertFalse(itEmpty.hasNext());
+        assertThrows(java.util.NoSuchElementException.class, () -> itEmpty.next());
+
+        // Cas 2: itérateur épuisé -> next() doit lever NoSuchElementException (pas de NPE)
+        queue.insertElement(99);
+        Iterator<Integer> itOne = queue.iterator();
+        assertTrue(itOne.hasNext());
+        assertEquals(99, itOne.next());
+        assertFalse(itOne.hasNext());
+        assertThrows(java.util.NoSuchElementException.class, () -> itOne.next());
+    }
+
+    @Test
+    public void test_iterator_Empty() {
+        // Après insertion d'un élément, hasNext() doit être true
+        queue.insertElement(1);
+        Iterator<Integer> it = queue.iterator();
+        assertTrue(it.hasNext());
+        assertEquals(1, it.next());
+        // Après consommation du seul élément, hasNext() devient false
+        assertFalse(it.hasNext());
+    }
 }
